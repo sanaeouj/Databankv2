@@ -59,7 +59,11 @@ const LogIn = () => {
       navigate("/Home");
     } catch (error) {
       console.error("Google Log-In Error:", error);
-      showSnackbar("Failed to log in with Google.", "error");
+      if (error.code === "auth/popup-closed-by-user") {
+        showSnackbar("Connexion annulée. Veuillez réessayer.", "error");
+      } else {
+        showSnackbar("Failed to log in with Google.", "error");
+      }
     }
   };
 
