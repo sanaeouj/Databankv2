@@ -40,28 +40,16 @@ const LogIn = () => {
     setSnackOpen(true);
   };
 
-  const handleGoogleLogIn = async () => {
-    try {
-      const result = await signInWithPopup(auth, googleProvider);
-      const userEmail = result.user.email;
-
-      const userDoc = await getDoc(doc(db, "authorizedUsers", userEmail));
-      console.log("userEmail:", userEmail, "userDoc.exists:", userDoc.exists());
-
-      if (!userDoc.exists()) {
-        await signOut(auth);
-        showSnackbar("Accès refusé : vous n'êtes pas autorisé à vous connecter.", "error");
-        return;
-      }
-
-      localStorage.setItem("isAuthenticated", "true");
-      localStorage.setItem("userName", result.user.displayName || "User");
-      navigate("/Home");
-    } catch (error) {
-      console.error("Google Log-In Error:", error);
-      showSnackbar(`Erreur Firestore: ${error.message}`, "error");
-    }
-  };
+const handleGoogleLogIn = async () => {
+  try {
+    const result = await signInWithPopup(auth, googleProvider);
+    localStorage.setItem("isAuthenticated", "true");
+    localStorage.setItem("userName", result.user.displayName || "User");
+    navigate("/Home");
+  } catch (error) {
+    showSnackbar(`Erreur Firestore: ${error.message}`, "error");
+  }
+};
 
   const handleEmailPasswordLogIn = async (e) => {
     e.preventDefault();
