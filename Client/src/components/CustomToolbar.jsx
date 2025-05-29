@@ -6,8 +6,9 @@ import {
   Toolbar,
 } from "@mui/material";
 import DownloadIcon from "@mui/icons-material/Download";
+import UploadFileIcon from "@mui/icons-material/UploadFile"; // Ajout de l'icône import
 
-const CustomToolbar = ({ exportToCSV, exportToExcel, setSettingsDialogOpen }) => {
+const CustomToolbar = ({ exportToCSV, exportToExcel, setSettingsDialogOpen, onImportClick }) => {
   const [exportMenuAnchorEl, setExportMenuAnchorEl] = useState(null);
 
   return (
@@ -22,6 +23,24 @@ const CustomToolbar = ({ exportToCSV, exportToExcel, setSettingsDialogOpen }) =>
         justifyContent: "flex-start",
       }}
     >
+      <Button
+        onClick={onImportClick}
+        startIcon={<UploadFileIcon />}
+        sx={{
+          color: "#fff",
+          bgcolor: "#293145",
+          borderRadius: 2,
+          fontWeight: 600,
+          mr: 2,
+          px: 2,
+          "&:hover": {
+            bgcolor: "#60a5fa",
+            color: "#181F2A",
+          },
+        }}
+      >
+        Import
+      </Button>
       <Button
         onClick={(e) => setExportMenuAnchorEl(e.currentTarget)}
         startIcon={<DownloadIcon />}

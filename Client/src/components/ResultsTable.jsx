@@ -283,7 +283,7 @@ const ResultsTable = ({ data = [], filters }) => {
           flexWrap: "wrap",
           gap: 2,
           p: 2,
-          bgcolor: "#232B3B",
+          bgcolor: "#20293A",
           borderRadius: 2,
           mb: 2,
         }}
@@ -347,7 +347,7 @@ const ResultsTable = ({ data = [], filters }) => {
             color: "white",
             borderRadius: 2,
             "& .MuiDataGrid-columnHeaders": {
-              backgroundColor: "#232B3B",
+              backgroundColor: "#20293A",
               color: "#fff",
               fontWeight: "bold",
             },
@@ -356,11 +356,11 @@ const ResultsTable = ({ data = [], filters }) => {
               color: "#fff",
             },
             "& .MuiDataGrid-row:hover": {
-              backgroundColor: "#232B3B",
+              backgroundColor: "#20293A",
               color: "#fff",
             },
             "& .MuiDataGrid-footerContainer": {
-              backgroundColor: "#232B3B",
+              backgroundColor: "#20293A",
               color: "#fff",
             },
             "& .MuiDataGrid-cell": {
