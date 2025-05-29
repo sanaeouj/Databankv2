@@ -4,29 +4,16 @@ import {
   Typography,
   TextField,
   Button,
-  CssBaseline,
+  Paper,
+  CircularProgress,
+  Container,
 } from "@mui/material";
 import FilterSidebar from "../components/FilterSidebar";
 import Sidebar from "../components/Sidebar";
 import ResultsTable from "../components/ResultsTable";
 import { useLocation } from "react-router-dom";
-import { createTheme, ThemeProvider, useTheme } from "@mui/material/styles";
- 
-const darkTheme = createTheme({
-  palette: {
-    mode: "dark",
-    primary: { main: "#60a5fa" },
-    secondary: { main: "#a78bfa" },
-    error: { main: "#f87171" },
-    background: { default: "#333", paper: "#1e1e1e" },
-    text: { primary: "#f3f4f6", secondary: "#d1d5db" },
-  },
-  shape: { borderRadius: 8 },
-  typography: {
-    fontFamily: ["Inter", "Segoe UI", "Roboto", "sans-serif"].join(","),
-    button: { textTransform: "none" },
-  },
-});
+
+const drawerWidth = 250;
 
 const People = () => {
   const location = useLocation();
@@ -42,7 +29,6 @@ const People = () => {
     return stored ? JSON.parse(stored) : {};
   });
   const [filterName, setFilterName] = useState("");
-  const theme = useTheme();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -97,79 +83,95 @@ const People = () => {
   const filteredData = applyFilters(data);
 
   return (
-    <ThemeProvider theme={darkTheme}>
-      <CssBaseline />
+    <Box sx={{ display: "flex", width: "100vw", height: "100vh", bgcolor: "#181F2A" }}>
+      <Sidebar />
       <Box
-        sx={{ display: "flex", height: "90vh", bgcolor: "#333", flexDirection: { xs: 'column', md: 'row' } }}
+        component="main"
+        sx={{
+          width: `calc(100vw - ${drawerWidth}px)`,
+          minHeight: "100vh",
+          bgcolor: "#181F2A",
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          overflowX: "auto",
+        }}
       >
-        <Sidebar />
-        {loading ? (
-          <Typography variant="h6" sx={{ color: "white", p: 2 }}>
-            Loading filters...
-          </Typography>
-        ) : (
-          <FilterSidebar
-            filters={filters}
-            setFilters={(newFilters) => {
-              setFilters(newFilters);
-              setShowTable(true);
-            }}
-            data={data}
-          />
-        )}
-        <Box sx={{ flexGrow: 1, p: 2, bgcolor: "#333" }}>
-          <Typography variant="h5" sx={{ mb: 3, color: "white" }}>
-            People List
-          </Typography>
-          <Box sx={{ display: "flex", gap: 1 }}>
-            <TextField
-              size="small"
-              variant="outlined"
-              placeholder="Enter filter name"
-              value={filterName}
-              onChange={(e) => setFilterName(e.target.value)}
-              sx={{
-                flexGrow: 0.1,
-                bgcolor: "white",
-                width: "150px",
-                fontSize: "0.8rem",
-                backgroundColor: "#333",
-
-                "& .MuiInputBase-input": {
-                  py: 0.5,
-                },
-              }}
-            />
-            <Button
-              variant="contained"
-              onClick={handleSaveFilter}
-              sx={{
-                flexShrink: 0,
-                color: "white",
-                fontSize: "0.8rem",
-                padding: "4px 8px",
-                marginBottom: "8px",
-                backgroundColor: "#333",
-                "&:hover": {
-                  backgroundColor: "black",
-                },
-              }}
-            >
-              Save
-            </Button>
+        <Box
+          sx={{
+            width: "100%",
+            maxWidth: 1400,
+            mx: "auto",
+            mt: 4,
+            display: "flex",
+            gap: 3,
+          }}
+        >
+          {/* Filter Sidebar */}
+          <Box sx={{ minWidth: 260 }}>
+            {loading ? (
+              <Paper sx={{ bgcolor: "#20293A", p: 2 }}>
+                <Typography variant="h6" sx={{ color: "#fff" }}>
+                  Loading filters...
+                </Typography>
+              </Paper>
+            ) : (
+              <FilterSidebar
+                filters={filters}
+                setFilters={(newFilters) => {
+                  setFilters(newFilters);
+                  setShowTable(true);
+                }}
+                data={data}
+              />
+            )}
           </Box>
-          {showTable ? (
-            <ResultsTable data={filteredData} filters={filters} />
-          ) : (
-            <Typography variant="body1" sx={{ color: "gray" }}>
-              Please select a filter to display the table.
-            </Typography>
-          )}
-
-        
-            </Box>
+          {/* Main Content */}
+          <Box sx={{ flexGrow: 1 }}>
+            <Paper sx={{ bgcolor: "#20293A", p: 3, mb: 3, borderRadius: 3 }}>
+              <Typography variant="h5" sx={{ color: "#fff", fontWeight: 700, mb: 1 }}>
+                People List
+              </Typography>
+              <Box sx={{ display: "flex", gap: 1 }}>
+                <TextField
+                  size="small"
+                  variant="outlined"
+                  placeholder="Enter filter name"
+                  value={filterName}
+                  onChange={(e) => setFilterName(e.target.value)}
+                  sx={{
+                    bgcolor: "#181F2A",
+                    input: { color: "#fff" },
+                    "& .MuiOutlinedInput-notchedOutline": { borderColor: "#293145" },
+                  }}
+                />
+                <Button
+                  variant="contained"
+                  onClick={handleSaveFilter}
+                  sx={{
+                    bgcolor: "#293145",
+                    color: "#fff",
+                    borderRadius: 2,
+                    "&:hover": { bgcolor: "#4ADE80", color: "#181F2A" },
+                  }}
+                >
+                  Save
+                </Button>
+              </Box>
+            </Paper>
+            <Paper sx={{ bgcolor: "#20293A", p: 3, borderRadius: 3, minHeight: 400 }}>
+              {showTable ? (
+                <ResultsTable data={filteredData} filters={filters} />
+              ) : (
+                <Typography variant="body1" sx={{ color: "gray" }}>
+                  Please select a filter to display the table.
+                </Typography>
+              )}
+            </Paper>
+          </Box>
+        </Box>
       </Box>
-    </ThemeProvider>
+    </Box>
   );
 };
 
