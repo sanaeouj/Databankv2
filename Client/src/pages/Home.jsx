@@ -108,7 +108,7 @@ const Home = () => {
 
   const progress = calculateProgress();
   const totalClients = data.length;
-  const ClientValide = data.reduce((count, item) => count + (item.EmailStatus === "Valid" ? 1 : 0), 0);
+  const ClientValide = data.reduce((count, item) => count + (item.EmailStatus === "Extrapolated" ? 1 : 0), 0);
   const ClientManager = data.filter((item) => item.title === "Manager" || item.title === "manager").length;
 
   const calculateCompanies = () => {
@@ -159,13 +159,13 @@ const Home = () => {
       <Box
         component="main"
         sx={{
-          width: `calc(100vw - ${drawerWidth}px)`,
+          width: `calc(90vw - ${drawerWidth}px)`,
           minHeight: "100vh",
           bgcolor: "#181F2A",
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
-          justifyContent: "center", // <-- centre verticalement dans la page web
+          justifyContent: "center", 
           overflowX: "auto",
         }}
       >

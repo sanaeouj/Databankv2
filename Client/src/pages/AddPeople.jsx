@@ -408,8 +408,8 @@ const AddPeople = () => {
                 required
               >
                 <option value="">-- Select Status --</option>
-                <option value="Valid">Valid</option>
-                <option value="Invalid">Invalid</option>
+                <option value="Extrapolated">Extrapolated</option>
+                <option value="Unavailable">Unavailable</option>
                 <option value="Unknown">Unknown</option>
               </select>
             </div>
