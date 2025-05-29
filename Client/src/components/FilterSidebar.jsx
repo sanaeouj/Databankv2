@@ -188,7 +188,7 @@ const FilterSidebar = ({ filters, setFilters, data }) => {
       <Box
         sx={{
           width: 250,
-          p: 0, // pas de padding global
+          p: 0,
           bgcolor: "background.paper",
           color: "text.primary",
           borderRight: "1px solid #232E3E",
@@ -196,25 +196,27 @@ const FilterSidebar = ({ filters, setFilters, data }) => {
           overflowY: "auto",
           display: "flex",
           flexDirection: "column",
-          alignItems: "stretch", // pour que tout prenne la largeur
+          alignItems: "stretch",
         }}
       >
-        <Box sx={{ px: 0, py: 3, width: "100%" }}>
-          <Typography variant="h5" fontWeight={700} sx={{ color: "#fff", mb: 2, px: 3 }}>
-            Filters
+        <Box sx={{ py: 2, width: "100%" }}>
+          <Typography variant="h6" fontWeight={700} sx={{ color: "#fff", mb: 1, px: 2 }}>
+            Filtres
           </Typography>
           <Button
             variant="outlined"
             onClick={handleResetFilters}
             startIcon={<FilterX size={18} color="#fff" />}
             sx={{
-              mb: 2,
+              mb: 1,
               color: "#fff",
               borderColor: alpha("#fff", 0.2),
               borderRadius: 2,
               fontWeight: 600,
-              mx: 3,
-              width: "calc(100% - 24px)",
+              mx: 2,
+              width: "calc(100% - 32px)",
+              minHeight: 32,
+              fontSize: 14,
               "&:hover": {
                 bgcolor: alpha("#60a5fa", 0.08),
                 borderColor: "#60a5fa",
@@ -222,10 +224,10 @@ const FilterSidebar = ({ filters, setFilters, data }) => {
               },
             }}
           >
-            Reset Filters
+            Effacer tout
           </Button>
-          <Divider sx={{ width: "100%", mb: 2, borderColor: "#232E3E" }} />
-          <Box sx={{ px: 3 }}>
+          <Divider sx={{ width: "100%", mb: 1, borderColor: "#232E3E" }} />
+          <Box sx={{ px: 2 }}>
             {fields.map(([label, key, condition]) => renderDropdown(label, key, condition))}
           </Box>
         </Box>

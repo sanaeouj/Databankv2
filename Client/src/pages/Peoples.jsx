@@ -1,23 +1,9 @@
 import React, { useState, useEffect } from "react";
-import {
-  Box,
-  Typography,
-  TextField,
-  Button,
-  Paper,
-  CircularProgress,
-  Container,
-  DataGrid,
-  Menu,
-  MenuItem,
-  Toolbar,
-  Snackbar,
-  Alert
-} from "@mui/material";
-import DownloadIcon from "@mui/icons-material/Download";
-import * as XLSX from "xlsx";
-import { useLocation } from "react-router-dom";
+import { Box, Typography, Paper, CircularProgress } from "@mui/material";
 import Sidebar from "../components/Sidebar";
+import FilterSidebar from "../components/FilterSidebar";
+import ResultsTable from "../components/ResultsTable";
+import { useLocation } from "react-router-dom";
 
 const drawerWidth = 250;
 
@@ -27,16 +13,7 @@ const People = () => {
   const [filters, setFilters] = useState(initialFilter);
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [showTable, setShowTable] = useState(
-    Object.keys(initialFilter).length > 0
-  );
-  const [pageSize, setPageSize] = useState(10);
-  const [snackbar, setSnackbar] = useState({
-    open: false,
-    message: "",
-    severity: "success",
-  });
-  const [exportMenuAnchorEl, setExportMenuAnchorEl] = useState(null);
+  const [showTable, setShowTable] = useState(Object.keys(initialFilter).length > 0);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -48,11 +25,6 @@ const People = () => {
         setData(result);
       } catch (error) {
         console.error("Error fetching data:", error);
-        setSnackbar({
-          open: true,
-          message: "Failed to fetch data",
-          severity: "error",
-        });
       } finally {
         setLoading(false);
       }
@@ -60,6 +32,7 @@ const People = () => {
     fetchData();
   }, []);
 
+  // Appliquer les filtres
   const applyFilters = (data) => {
     return data.filter((item) => {
       return Object.entries(filters).every(([key, value]) => {
@@ -80,209 +53,6 @@ const People = () => {
 
   const filteredData = applyFilters(data);
 
-  const headerMapping = {
-    "First Name": "First Name",
-    "Last Name": "Last Name",
-    "title": "Title",
-    "seniority": "Seniority",
-    "departments": "Departments",
-    "mobilePhone": "Mobile Phone",
-    "email": "Email",
-    "EmailStatus": "Email Status",
-    "company_company": "Company",
-    "company_Email": "Company Email",
-    "company_Phone": "Company Phone",
-    "company_employees": "Employees",
-    "company_industry": "Industry",
-    "company_SEO Description": "SEO Description",
-    "company_linkedinlink": "Company LinkedIn",
-    "company_website": "Company Website",
-    "geo_address": "Address",
-    "geo_city": "City",
-    "geo_state": "State",
-    "geo_country": "Country",
-    "social_Company Linkedin Url": "LinkedIn",
-    "social_Facebook Url": "Facebook",
-    "social_Twitter Url": "Twitter",
-    "revenue_Latest Funding": "Latest Funding Date",
-    "revenue_Latest Funding Amount": "Latest Funding Amount",
-  };
-
-  const hiddenColumns = [
-    "personalid",
-    "companyid",
-    "company_companyid",
-    "companycompanyid",
-    "company_personalid",
-    "geoid",
-    "geocompanyid",
-    "revenueid",
-    "revenue.companyid",
-    "revenue_companyid",
-    "revenuecompanyid",
-    "socialid",
-    "social_companyid",
-    "socialcompanyid"
-  ];
-
-  const flattenData = (data) => {
-    return data.map(item => {
-      return {
-        "personalid": item.personalid,
-        "First Name": item["First Name"] || "",
-        "Last Name": item["Last Name"] || "",
-        "title": item.title || "",
-        "seniority": item.seniority || "",
-        "departments": item.departments || "",
-        "mobilePhone": item.mobilePhone || "",
-        "email": item.email || "",
-        "EmailStatus": item.EmailStatus || "",
-        "company_company": item.company?.company || "",
-        "company_Email": item.company?.Email || "",
-        "company_Phone": item.company?.Phone || "",
-        "company_employees": item.company?.employees || "",
-        "company_industry": item.company?.industry || "",
-        "company_SEO Description": item.company?.["SEO Description"] || "",
-        "company_linkedinlink": item.company?.linkedinlink || "",
-        "company_website": item.company?.website || "",
-        "geo_address": item.geo?.address || "",
-        "geo_city": item.geo?.city || "",
-        "geo_state": item.geo?.state || "",
-        "geo_country": item.geo?.country || "",
-        "revenue_Latest Funding": item.revenue?.["Latest Funding"] || "",
-        "revenue_Latest Funding Amount": item.revenue?.["Latest Funding Amount"] || "",
-        "social_Company Linkedin Url": item.social?.["Company Linkedin Url"] || "",
-        "social_Facebook Url": item.social?.["Facebook Url"] || "",
-        "social_Twitter Url": item.social?.["Twitter Url"] || ""
-      };
-    });
-  };
-
-  const getColumnsFromData = (data) => {
-    if (!data || !data.length) return [];
-    const columns = [];
-
-    const sampleItem = flattenData([data[0]])[0];
-    for (const key in sampleItem) {
-      if (!hiddenColumns.some((hc) => key.includes(hc))) {
-        columns.push({
-          field: key,
-          headerName: headerMapping[key] || key
-            .split("_")
-            .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-            .join(" "),
-          width: 200,
-          renderCell: (params) => {
-            if (key === "company_linkedinlink" || key === "company_website") {
-              return params.value ? (
-                <a
-                  href={
-                    params.value.startsWith("http://") ||
-                    params.value.startsWith("https://")
-                      ? params.value
-                      : `https://${params.value}`
-                  }
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  style={{ color: "#90caf9" }}
-                >
-                  {key === "company_linkedinlink" ? "LinkedIn" : "Website"}
-                </a>
-              ) : (
-                ""
-              );
-            }
-            if (key === "revenue_Latest Funding") {
-              return formatDate(params.value);
-            } else if (key.includes("Url")) {
-              return params.value ? (
-                <a
-                  href={
-                    params.value.startsWith("http://") ||
-                    params.value.startsWith("https://")
-                      ? params.value
-                      : `https://${params.value}`
-                  }
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  style={{ color: "#90caf9" }}
-                >
-                  LINK
-                </a>
-              ) : (
-                ""
-              );
-            }
-            return params.value || "";
-          },
-        });
-      }
-    }
-    return columns;
-  };
-
-  const formatDate = (dateString) => {
-    return new Date(dateString).toLocaleDateString("fr-FR");
-  };
-
-  const exportToCSV = () => {
-    if (!filteredData.length) {
-      alert("No data to export.");
-      return;
-    }
-
-    const headers = Object.keys(headerMapping);
-    
-    const csvRows = filteredData.map(row => {
-      return headers.map(header => {
-        const fieldName = headerMapping[header];
-        const cellValue = row[fieldName];
-        return `"${(cellValue !== null && cellValue !== undefined ? cellValue.toString().replace(/"/g, '""') : '')}"`;
-      }).join(',');
-    });
-
-    csvRows.unshift(headers.map(h => `"${h}"`).join(','));
-    const csvContent = csvRows.join('\n');
-
-    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-    const link = document.createElement('a');
-    const url = URL.createObjectURL(blob);
-    
-    link.setAttribute('href', url);
-    link.setAttribute('download', 'databank_export.csv');
-    link.style.visibility = 'hidden';
-    
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-  };
-
-  const exportToExcel = () => {
-    if (!filteredData.length) {
-      alert("No data to export.");
-      return;
-    }
-
-    const headers = Object.keys(headerMapping);
-    
-    const exportData = filteredData.map(row => {
-      const exportedRow = {};
-      headers.forEach(header => {
-        const fieldName = headerMapping[header];
-        exportedRow[header] = row[fieldName] || '';
-      });
-      return exportedRow;
-    });
-
-    const worksheet = XLSX.utils.json_to_sheet(exportData);
-    const workbook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workbook, worksheet, "Data");
-    
-    XLSX.writeFile(workbook, "databank_export.xlsx");
-  };
-
-  const columns = getColumnsFromData(data);
-
   return (
     <Box sx={{ display: "flex", width: "100vw", height: "100vh", bgcolor: "#181F2A" }}>
       <Sidebar />
@@ -293,195 +63,79 @@ const People = () => {
           minHeight: "100vh",
           bgcolor: "#181F2A",
           display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          overflowX: "auto",
-          padding: 2,
+          flexDirection: "row",
+          alignItems: "stretch",
+          overflow: "hidden",
         }}
       >
-        <Paper
+        {/* Sidebar des filtres, collée sans espace */}
+        <Box
           sx={{
+            width: 250,
+            minWidth: 250,
+            maxWidth: 250,
+            height: "100vh",
             bgcolor: "#20293A",
-            borderRadius: 3,
-            p: 3,
-            mb: 3,
-            boxShadow: "0 2px 8px rgba(0,0,0,0.08)",
-            color: "#fff",
-            width: "100%",
+            borderRight: "1px solid #232B3B",
+            p: 0,
+            m: 0,
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "flex-start",
           }}
         >
-          <Typography variant="h5" sx={{ color: "#fff", mb: 2, fontWeight: 700 }}>
-            People List
-          </Typography>
-          
-          <Toolbar
-            sx={{
-              bgcolor: "#20293A",
-              mb: 2,
-              color: "#fff",
-              borderRadius: 2,
-              minHeight: 48,
-              px: 0,
-              justifyContent: "flex-start",
-            }}
-          >
-            <Button
-              onClick={(e) => setExportMenuAnchorEl(e.currentTarget)}
-              startIcon={<DownloadIcon />}
-              sx={{
-                color: "#fff",
-                bgcolor: "#293145",
-                borderRadius: 2,
-                fontWeight: 600,
-                mr: 2,
-                px: 2,
-                "&:hover": {
-                  bgcolor: "#60a5fa",
-                  color: "#181F2A",
-                },
-              }}
-            >
-              Export
-            </Button>
-            <Menu
-              anchorEl={exportMenuAnchorEl}
-              open={Boolean(exportMenuAnchorEl)}
-              onClose={() => setExportMenuAnchorEl(null)}
-              PaperProps={{
-                sx: {
-                  bgcolor: "#20293A",
-                  color: "#fff",
-                  borderRadius: 2,
-                  boxShadow: "0 2px 8px rgba(0,0,0,0.12)",
-                },
-              }}
-            >
-              <MenuItem
-                onClick={() => {
-                  exportToCSV();
-                  setExportMenuAnchorEl(null);
-                }}
-                sx={{
-                  color: "#fff",
-                  "&:hover": { bgcolor: "#293145", color: "#60a5fa" },
-                }}
-              >
-                Download as CSV
-              </MenuItem>
-              <MenuItem
-                onClick={() => {
-                  exportToExcel();
-                  setExportMenuAnchorEl(null);
-                }}
-                sx={{
-                  color: "#fff",
-                  "&:hover": { bgcolor: "#293145", color: "#60a5fa" },
-                }}
-              >
-                Download as Excel
-              </MenuItem>
-            </Menu>
-          </Toolbar>
-
           {loading ? (
-            <Box sx={{ display: "flex", justifyContent: "center", p: 4 }}>
-              <CircularProgress />
-            </Box>
+            <Paper sx={{ bgcolor: "#20293A", p: 2, boxShadow: "none" }}>
+              <Typography variant="h6" sx={{ color: "#fff" }}>
+                Chargement des filtres...
+              </Typography>
+            </Paper>
           ) : (
-            <>
-              <Box
-                sx={{
-                  display: "flex",
-                  justifyContent: "flex-start",
-                  alignItems: "center",
-                  px: 2,
-                  py: 1,
-                  backgroundColor: "#1e1e1e",
-                  color: "#fff",
-                  fontSize: "16px",
-                  fontWeight: "bold",
-                  borderRadius: 2,
-                  mb: 2,
-                }}
-              >
-                <Typography variant="body1" sx={{ color: "#fff" }}>
-                  Total Results: {filteredData.length}
-                </Typography>
-              </Box>
-
-              <Box sx={{ height: "70vh", width: "100%" }}>
-                <DataGrid
-                  rows={filteredData}
-                  columns={columns}
-                  getRowId={(row) => row.personalid || Math.random()}
-                  pageSize={pageSize}
-                  onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
-                  rowsPerPageOptions={[5, 10, 20, 100]}
-                  checkboxSelection
-                  disableRowSelectionOnClick
-                  sx={{
-                    fontSize: "16px",
-                    backgroundColor: "#1e1e1e",
-                    color: "white",
-                    borderRadius: 2,
-                    "& .MuiDataGrid-columnHeaders": {
-                      backgroundColor: "#232B3B",
-                      color: "#fff",
-                      fontWeight: "bold",
-                    },
-                    "& .MuiDataGrid-row": {
-                      backgroundColor: "#1e1e1e",
-                      color: "#fff",
-                    },
-                    "& .MuiDataGrid-row:hover": {
-                      backgroundColor: "#232B3B",
-                      color: "#fff",
-                    },
-                    "& .MuiDataGrid-footerContainer": {
-                      backgroundColor: "#232B3B",
-                      color: "#fff",
-                    },
-                    "& .MuiDataGrid-cell": {
-                      backgroundColor: "#1e1e1e",
-                      color: "#fff",
-                      textAlign: "center",
-                    },
-                    "& .MuiDataGrid-columnHeaderTitle": {
-                      color: "#fff",
-                      textAlign: "center",
-                      width: "100%",
-                      display: "flex",
-                      justifyContent: "center",
-                      alignItems: "center",
-                    },
-                    "& .MuiDataGrid-columnHeaderCheckbox": { color: "#fff" },
-                    "& .MuiDataGrid-rowCheckbox": { color: "#fff" },
-                    "& .MuiTablePagination-displayedRows": { color: "#fff" },
-                    "& .MuiTablePagination-actions": { color: "#fff" },
-                    "& .MuiTablePagination-selectIcon": { color: "#fff" },
-                    "& .MuiTablePagination-selectLabel": { color: "#fff" },
-                    "& .MuiTablePagination-menuItem": { color: "#fff" },
-                  }}
-                />
-              </Box>
-            </>
+            <FilterSidebar
+              filters={filters}
+              setFilters={(newFilters) => {
+                setFilters(newFilters);
+                setShowTable(true);
+              }}
+              data={data}
+            />
           )}
-        </Paper>
-
-        <Snackbar
-          open={snackbar.open}
-          autoHideDuration={6000}
-          onClose={() => setSnackbar({ ...snackbar, open: false })}
-          anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+        </Box>
+        {/* Contenu principal */}
+        <Box
+          sx={{
+            flexGrow: 1,
+            p: 0,
+            height: "100vh",
+            overflow: "auto",
+            display: "flex",
+            flexDirection: "column",
+            bgcolor: "#181F2A",
+          }}
         >
-          <Alert
-            onClose={() => setSnackbar({ ...snackbar, open: false })}
-            severity={snackbar.severity}
-            sx={{ width: "100%" }}
-          >
-            {snackbar.message}
-          </Alert>
-        </Snackbar>
+          <Box sx={{ px: 4, pt: 4, pb: 2 }}>
+            <Typography variant="h5" sx={{ color: "#fff", fontWeight: 700, mb: 0 }}>
+              People List
+            </Typography>
+          </Box>
+          <Box sx={{ flexGrow: 1, px: 4, pb: 4, display: "flex", flexDirection: "column" }}>
+            <Paper sx={{ bgcolor: "#20293A", p: 0, borderRadius: 3, minHeight: 400, boxShadow: "none", flexGrow: 1, display: "flex", flexDirection: "column" }}>
+              {loading ? (
+                <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", flexGrow: 1 }}>
+                  <CircularProgress />
+                </Box>
+              ) : showTable && filteredData.length > 0 ? (
+                <ResultsTable data={filteredData} filters={filters} />
+              ) : (
+                <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", flexGrow: 1 }}>
+                  <Typography variant="body1" sx={{ color: "gray" }}>
+                    Veuillez sélectionner un filtre pour afficher le tableau.
+                  </Typography>
+                </Box>
+              )}
+            </Paper>
+          </Box>
+        </Box>
       </Box>
     </Box>
   );
