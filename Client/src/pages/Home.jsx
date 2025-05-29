@@ -24,6 +24,7 @@ import TrendingUpIcon from '@mui/icons-material/TrendingUp';
 import ApartmentIcon from '@mui/icons-material/Apartment';
 import AddIcon from '@mui/icons-material/Add';
 
+const drawerWidth = 250;  
 const Home = () => {
   const navigate = useNavigate();
   const [userName, setUserName] = useState(localStorage.getItem("userName") || "User");
@@ -153,217 +154,229 @@ const Home = () => {
   const maxCountry = Math.max(...Object.values(countryData), 1);
 
   return (
-    <Box sx={{ display: "flex", width: "100vw", height: "100vh", bgcolor: "#181F2A", overflow: "hidden" }}>
+    <Box sx={{ display: "flex", width: "100vw", height: "100vh", bgcolor: "#181F2A" }}>
       <Sidebar />
       <Box
         component="main"
         sx={{
-          flexGrow: 1,
+          width: `calc(100% - ${drawerWidth}px)`,  
+          minHeight: "100vh",
+          ml: `${drawerWidth}px`,  
+          bgcolor: "#181F2A",
           display: "flex",
           flexDirection: "column",
-          minHeight: "100vh",
-          width: "100%",
-          bgcolor: "#181F2A",
+          alignItems: "center",
+          justifyContent: "flex-start",
+          overflowX: "auto",
         }}
       >
-        {/* AppBar with Logout */}
-        <AppBar position="static" sx={{ bgcolor: "#181F2A", boxShadow: "none", px: 4 }}>
-          <Toolbar>
-            <Typography variant="h5" sx={{ flexGrow: 1, color: "#fff", fontWeight: 700 }}>
-              Dashboard
-            </Typography>
-            <Typography sx={{ color: "#bfc9db", mr: 2 }}>
-              Welcome, {userName}
-            </Typography>
-            <Button
-              variant="contained"
-              sx={{
-                bgcolor: "#f4e33d",
-                color: "#181F2A",
-                fontWeight: 700,
-                "&:hover": { bgcolor: "#ffe066", color: "#181F2A" },
-                boxShadow: "none",
-              }}
-              onClick={handleLogout}
-            >
-              Logout
-            </Button>
-          </Toolbar>
-        </AppBar>
-        <Container sx={{ px: 3, pt: 4, flexGrow: 1, width: "100%" }}>
-          {loading ? (
-            <Box sx={{ display: "flex", justifyContent: "center", mt: 4 }}>
-              <CircularProgress />
-            </Box>
-          ) : (
-            <>
-              <Typography variant="h6" gutterBottom sx={{ color: "#fff" }}>
-                Welcome back, {userName} 👋
+        <Box
+          sx={{
+            width: "100%",
+            maxWidth: 1200, // largeur max du contenu centré
+            mx: "auto",
+            mt: 4,
+          }}
+        >
+          {/* AppBar with Logout */}
+          <AppBar position="static" sx={{ bgcolor: "#181F2A", boxShadow: "none", px: 4 }}>
+            <Toolbar>
+              <Typography variant="h5" sx={{ flexGrow: 1, color: "#fff", fontWeight: 700 }}>
+                Dashboard
               </Typography>
-              <Typography variant="body1" gutterBottom sx={{ color: "#bfc9db" }}>
-                Here’s what’s happening with your business today.
+              <Typography sx={{ color: "#bfc9db", mr: 2 }}>
+                Welcome, {userName}
               </Typography>
-              {/* Stat Cards */}
-              <Box sx={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 3, mb: 4 }}>
-                <StatCard
-                  icon={<PeopleIcon sx={{ fontSize: 32, color: "#60A5FA" }} />}
-                  label="Total Customers"
-                  value={totalClients}
-                />
-                <StatCard
-                  icon={<CheckCircleIcon sx={{ fontSize: 32, color: "#4ADE80" }} />}
-                  label="Valid Clients"
-                  value={ClientValide}
-                />
-                <StatCard
-                  icon={<TrendingUpIcon sx={{ fontSize: 32, color: "#A78BFA" }} />}
-                  label="Client Managers"
-                  value={ClientManager}
-                />
-                <StatCard
-                  icon={<ApartmentIcon sx={{ fontSize: 32, color: "#FBBF24" }} />}
-                  label="Companies"
-                  value={calculateCompanies()}
-                />
+              <Button
+                variant="contained"
+                sx={{
+                  bgcolor: "#f4e33d",
+                  color: "#181F2A",
+                  fontWeight: 700,
+                  "&:hover": { bgcolor: "#ffe066", color: "#181F2A" },
+                  boxShadow: "none",
+                }}
+                onClick={handleLogout}
+              >
+                Logout
+              </Button>
+            </Toolbar>
+          </AppBar>
+          <Container sx={{ px: 3, pt: 4, flexGrow: 1, width: "100%" }}>
+            {loading ? (
+              <Box sx={{ display: "flex", justifyContent: "center", mt: 4 }}>
+                <CircularProgress />
               </Box>
-              {/* Cards Section */}
-              <Box sx={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 3 }}>
-                {/* By Country */}
-                <Paper
-                  sx={{
-                    bgcolor: "#20293A",
-                    p: 3,
-                    borderRadius: 3,
-                    height: 220,
-                    display: "flex",
-                    flexDirection: "column",
-                  }}
-                >
-                  <Typography variant="h6" sx={{ color: "#fff", mb: 2 }}>By Country</Typography>
-                  <Box sx={{ flex: 1, overflowY: "auto" }}>
-                    {Object.entries(countryData).map(([country, count]) => (
-                      <Box key={country} sx={{ mb: 2 }}>
-                        <Typography sx={{ color: "#bfc9db" }}>{country}</Typography>
-                        <Box sx={{ display: "flex", alignItems: "center" }}>
-                          <Box sx={{ width: "80%", mr: 1 }}>
-                            <LinearProgress
-                              variant="determinate"
-                              value={(count / maxCountry) * 100}
-                              sx={{
-                                height: 8,
-                                borderRadius: 5,
-                                background: "#293145",
-                                "& .MuiLinearProgress-bar": { backgroundColor: "#6366F1" },
-                              }}
-                            />
-                          </Box>
-                          <Typography sx={{ color: "#fff", fontWeight: 600 }}>{count}</Typography>
-                        </Box>
-                      </Box>
-                    ))}
-                  </Box>
-                </Paper>
-                {/* Recent Activity */}
-                <Paper
-                  sx={{
-                    bgcolor: "#20293A",
-                    p: 3,
-                    borderRadius: 3,
-                    height: 220,
-                    display: "flex",
-                    flexDirection: "column",
-                  }}
-                >
-                  <Typography variant="h6" sx={{ color: "#fff", mb: 2 }}>Recent Activity</Typography>
-                  <Box sx={{ flex: 1, overflowY: "auto" }}>
-                    {recentActivity.map((act, i) => (
-                      <Box key={i} sx={{ display: "flex", alignItems: "center", mb: 2 }}>
-                        <Box sx={{ width: 10, height: 10, borderRadius: "50%", bgcolor: act.color, mr: 2 }} />
-                        <Typography sx={{ color: "#fff", fontWeight: 500 }}>{act.text}</Typography>
-                        <Typography sx={{ color: "#bfc9db", ml: "auto", fontSize: 12 }}>{act.time}</Typography>
-                      </Box>
-                    ))}
-                  </Box>
-                </Paper>
-                {/* Task Manager */}
-                <Paper
-                  sx={{
-                    bgcolor: "#20293A",
-                    p: 3,
-                    borderRadius: 3,
-                    height: 220,
-                    display: "flex",
-                    flexDirection: "column",
-                  }}
-                >
-                  <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 2 }}>
-                    <Typography variant="h6" sx={{ color: "#fff" }}>Task Manager</Typography>
-                    <Typography sx={{ color: "#bfc9db", fontSize: 14 }}>
-                      {completedTasks}/{tasks.length} completed
-                    </Typography>
-                  </Box>
-                  <LinearProgress
-                    variant="determinate"
-                    value={progress}
-                    sx={{
-                      height: 8,
-                      borderRadius: 5,
-                      background: "#293145",
-                      "& .MuiLinearProgress-bar": { backgroundColor: "#4ADE80" },
-                      mb: 2,
-                    }}
+            ) : (
+              <>
+                <Typography variant="h6" gutterBottom sx={{ color: "#fff" }}>
+                  Welcome back, {userName} 👋
+                </Typography>
+                <Typography variant="body1" gutterBottom sx={{ color: "#bfc9db" }}>
+                  Here’s what’s happening with your business today.
+                </Typography>
+                {/* Stat Cards */}
+                <Box sx={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 3, mb: 4 }}>
+                  <StatCard
+                    icon={<PeopleIcon sx={{ fontSize: 32, color: "#60A5FA" }} />}
+                    label="Total Customers"
+                    value={totalClients}
                   />
-                  <Box sx={{ display: "flex", mt: 2 }}>
-                    <TextField
-                      placeholder="Add a new task..."
-                      variant="outlined"
-                      value={newTask}
-                      onChange={(e) => setNewTask(e.target.value)}
-                      size="small"
+                  <StatCard
+                    icon={<CheckCircleIcon sx={{ fontSize: 32, color: "#4ADE80" }} />}
+                    label="Valid Clients"
+                    value={ClientValide}
+                  />
+                  <StatCard
+                    icon={<TrendingUpIcon sx={{ fontSize: 32, color: "#A78BFA" }} />}
+                    label="Client Managers"
+                    value={ClientManager}
+                  />
+                  <StatCard
+                    icon={<ApartmentIcon sx={{ fontSize: 32, color: "#FBBF24" }} />}
+                    label="Companies"
+                    value={calculateCompanies()}
+                  />
+                </Box>
+                {/* Cards Section */}
+                <Box sx={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 3 }}>
+                  {/* By Country */}
+                  <Paper
+                    sx={{
+                      bgcolor: "#20293A",
+                      p: 3,
+                      borderRadius: 3,
+                      height: 220,
+                      display: "flex",
+                      flexDirection: "column",
+                    }}
+                  >
+                    <Typography variant="h6" sx={{ color: "#fff", mb: 2 }}>By Country</Typography>
+                    <Box sx={{ flex: 1, overflowY: "auto" }}>
+                      {Object.entries(countryData).map(([country, count]) => (
+                        <Box key={country} sx={{ mb: 2 }}>
+                          <Typography sx={{ color: "#bfc9db" }}>{country}</Typography>
+                          <Box sx={{ display: "flex", alignItems: "center" }}>
+                            <Box sx={{ width: "80%", mr: 1 }}>
+                              <LinearProgress
+                                variant="determinate"
+                                value={(count / maxCountry) * 100}
+                                sx={{
+                                  height: 8,
+                                  borderRadius: 5,
+                                  background: "#293145",
+                                  "& .MuiLinearProgress-bar": { backgroundColor: "#6366F1" },
+                                }}
+                              />
+                            </Box>
+                            <Typography sx={{ color: "#fff", fontWeight: 600 }}>{count}</Typography>
+                          </Box>
+                        </Box>
+                      ))}
+                    </Box>
+                  </Paper>
+                  {/* Recent Activity */}
+                  <Paper
+                    sx={{
+                      bgcolor: "#20293A",
+                      p: 3,
+                      borderRadius: 3,
+                      height: 220,
+                      display: "flex",
+                      flexDirection: "column",
+                    }}
+                  >
+                    <Typography variant="h6" sx={{ color: "#fff", mb: 2 }}>Recent Activity</Typography>
+                    <Box sx={{ flex: 1, overflowY: "auto" }}>
+                      {recentActivity.map((act, i) => (
+                        <Box key={i} sx={{ display: "flex", alignItems: "center", mb: 2 }}>
+                          <Box sx={{ width: 10, height: 10, borderRadius: "50%", bgcolor: act.color, mr: 2 }} />
+                          <Typography sx={{ color: "#fff", fontWeight: 500 }}>{act.text}</Typography>
+                          <Typography sx={{ color: "#bfc9db", ml: "auto", fontSize: 12 }}>{act.time}</Typography>
+                        </Box>
+                      ))}
+                    </Box>
+                  </Paper>
+                  {/* Task Manager */}
+                  <Paper
+                    sx={{
+                      bgcolor: "#20293A",
+                      p: 3,
+                      borderRadius: 3,
+                      height: 220,
+                      display: "flex",
+                      flexDirection: "column",
+                    }}
+                  >
+                    <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 2 }}>
+                      <Typography variant="h6" sx={{ color: "#fff" }}>Task Manager</Typography>
+                      <Typography sx={{ color: "#bfc9db", fontSize: 14 }}>
+                        {completedTasks}/{tasks.length} completed
+                      </Typography>
+                    </Box>
+                    <LinearProgress
+                      variant="determinate"
+                      value={progress}
                       sx={{
-                        flex: 1,
-                        bgcolor: "#181F2A",
-                        input: { color: "#fff" },
-                        "& .MuiOutlinedInput-notchedOutline": { borderColor: "#293145" },
+                        height: 8,
+                        borderRadius: 5,
+                        background: "#293145",
+                        "& .MuiLinearProgress-bar": { backgroundColor: "#4ADE80" },
+                        mb: 2,
                       }}
                     />
-                    <Button
-                      variant="contained"
-                      onClick={handleAddTask}
-                      sx={{
-                        ml: 1,
-                        minWidth: 40,
-                        bgcolor: "#293145",
-                        color: "#fff",
-                        borderRadius: 2,
-                        "&:hover": { bgcolor: "#4ADE80", color: "#181F2A" },
-                        p: 0,
-                      }}
-                    >
-                      <AddIcon />
-                    </Button>
-                  </Box>
-                  <Box sx={{ flex: 1, overflowY: "auto", mt: 2 }}>
-                    <List>
-                      {tasks.map((task, index) => (
-                        <ListItem key={index} sx={{ color: "#fff", bgcolor: "#232B3B", borderRadius: 1, mb: 1 }}>
-                          <Checkbox
-                            checked={task.completed}
-                            onChange={() => toggleComplete(index)}
-                            sx={{ color: "#4ADE80" }}
-                          />
-                          <ListItemText primary={task.text} />
-                          <Button size="small" color="error" onClick={() => handleDeleteTask(index)}>Delete</Button>
-                          <Button size="small" color="primary" onClick={() => handleEditTask(index)}>Edit</Button>
-                        </ListItem>
-                      ))}
-                    </List>
-                  </Box>
-                </Paper>
-              </Box>
-            </>
-          )}
-        </Container>
+                    <Box sx={{ display: "flex", mt: 2 }}>
+                      <TextField
+                        placeholder="Add a new task..."
+                        variant="outlined"
+                        value={newTask}
+                        onChange={(e) => setNewTask(e.target.value)}
+                        size="small"
+                        sx={{
+                          flex: 1,
+                          bgcolor: "#181F2A",
+                          input: { color: "#fff" },
+                          "& .MuiOutlinedInput-notchedOutline": { borderColor: "#293145" },
+                        }}
+                      />
+                      <Button
+                        variant="contained"
+                        onClick={handleAddTask}
+                        sx={{
+                          ml: 1,
+                          minWidth: 40,
+                          bgcolor: "#293145",
+                          color: "#fff",
+                          borderRadius: 2,
+                          "&:hover": { bgcolor: "#4ADE80", color: "#181F2A" },
+                          p: 0,
+                        }}
+                      >
+                        <AddIcon />
+                      </Button>
+                    </Box>
+                    <Box sx={{ flex: 1, overflowY: "auto", mt: 2 }}>
+                      <List>
+                        {tasks.map((task, index) => (
+                          <ListItem key={index} sx={{ color: "#fff", bgcolor: "#232B3B", borderRadius: 1, mb: 1 }}>
+                            <Checkbox
+                              checked={task.completed}
+                              onChange={() => toggleComplete(index)}
+                              sx={{ color: "#4ADE80" }}
+                            />
+                            <ListItemText primary={task.text} />
+                            <Button size="small" color="error" onClick={() => handleDeleteTask(index)}>Delete</Button>
+                            <Button size="small" color="primary" onClick={() => handleEditTask(index)}>Edit</Button>
+                          </ListItem>
+                        ))}
+                      </List>
+                    </Box>
+                  </Paper>
+                </Box>
+              </>
+            )}
+          </Container>
+        </Box>
       </Box>
     </Box>
   );
