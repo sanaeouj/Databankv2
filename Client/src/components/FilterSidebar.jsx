@@ -224,7 +224,7 @@ const FilterSidebar = ({ filters, setFilters, data }) => {
               },
             }}
           >
-            Effacer tout
+            Clear all
           </Button>
           <Divider sx={{ width: "100%", mb: 1, borderColor: "#232E3E" }} />
           <Box sx={{ px: 2 }}>
