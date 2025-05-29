@@ -13,7 +13,6 @@ import {
   Alert,
   Typography,
   Button,
-  Paper,
 } from "@mui/material";
 import * as XLSX from "xlsx";
 import axios from "axios";
@@ -573,21 +572,14 @@ const exportToCSV = () => {
   ];
 
   return (
-    <Paper
-      sx={{
-        bgcolor: "#20293A",
-        borderRadius: 3,
-        p: 3,
-        mb: 3,
-        minHeight: 400,
-        boxShadow: "0 2px 8px rgba(0,0,0,0.08)",
-        width: "100%",
-        overflow: "auto",
+    <div
+      style={{
+        height: "90vh",
+        overflowX: "auto",
+        backgroundColor: "#333",
+        color: "white",
       }}
     >
-      <Typography variant="h6" sx={{ color: "#fff", mb: 2, fontWeight: 700 }}>
-        Results Table
-      </Typography>
       <CustomToolbar
         exportToCSV={exportToCSV}
         exportToExcel={exportToExcel}
@@ -599,9 +591,6 @@ const exportToCSV = () => {
           flexWrap: "wrap",
           gap: 2,
           padding: 2,
-          bgcolor: "#232B3B",
-          borderRadius: 2,
-          mb: 2,
         }}
       >
         {displayedColumns.map((col) => (
@@ -620,13 +609,9 @@ const exportToCSV = () => {
             sx={{
               flex: 1,
               minWidth: "150px",
-              bgcolor: "#181F2A",
-              input: { color: "#fff" },
-              "& .MuiOutlinedInput-notchedOutline": { borderColor: "#293145" },
-              "& .MuiInputLabel-root": { color: "#bfc9db" },
             }}
             InputProps={{ style: { color: "white" } }}
-            InputLabelProps={{ style: { color: "#bfc9db" } }}
+            InputLabelProps={{ style: { color: "white" } }}
           />
         ))}
       </Box>
@@ -640,77 +625,101 @@ const exportToCSV = () => {
           color: "white",
           fontSize: "16px",
           fontWeight: "bold",
-          borderRadius: 2,
-          mb: 2,
         }}
       >
         <Typography variant="body1" sx={{ color: "white" }}>
           Total Filter: {filteredData.length}
         </Typography>
       </Box>
-      <Box sx={{ height: "60vh", width: "100%" }}>
-        <DataGrid
-          rows={filteredData}
-          columns={displayedColumns}
-          getRowId={(row) => row.personalid || Math.random()}
-          pageSize={pageSize}
-          onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
-          rowsPerPageOptions={[5, 10, 20, 100]}
-          checkboxSelection
-          disableRowSelectionOnClick
-          sx={{
-            fontSize: "16px",
+      <DataGrid
+        rows={filteredData}
+        columns={displayedColumns}
+        getRowId={(row) => row.personalid || Math.random()}
+        pageSize={pageSize}
+        onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
+        rowsPerPageOptions={[5, 10, 20, 100]}
+        checkboxSelection
+        disableRowSelectionOnClick
+        sx={{
+          fontSize: "20px",
+          height: "100%",
+          overflowX: "auto",
+          backgroundColor: "#333",
+          color: "white",
+          width: `${Math.max(
+            displayedColumns.reduce(
+              (total, col) => total + (col.width || 200),
+              0
+            ),
+            window.innerWidth
+          )}px`,
+          "& .MuiDataGrid-columnHeaders": {
+            backgroundColor: "#333",
+            color: "white",
+            fontWeight: "bold",
+          },
+          "& .MuiDataGrid-row": {
             backgroundColor: "#1e1e1e",
             color: "white",
-            borderRadius: 2,
-            "& .MuiDataGrid-columnHeaders": {
-              backgroundColor: "#232B3B",
-              color: "white",
-              fontWeight: "bold",
-            },
-            "& .MuiDataGrid-row": {
-              backgroundColor: "#1e1e1e",
-              color: "white",
-            },
-            "& .MuiDataGrid-row:hover": {
-              backgroundColor: "#232B3B",
-              color: "white",
-            },
-            "& .MuiDataGrid-footerContainer": {
-              backgroundColor: "#232B3B",
-              color: "white",
-            },
-            "& .MuiDataGrid-cell": {
-              backgroundColor: "#1e1e1e",
-              color: "white",
-              textAlign: "center",
-            },
-            "& .MuiDataGrid-columnHeaderTitle": {
-              color: "white",
-              textAlign: "center",
-              width: "100%",
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-            },
-            "& .MuiDataGrid-columnHeaderCheckbox": { color: "white" },
-            "& .MuiDataGrid-rowCheckbox": { color: "white" },
-            "& .MuiTablePagination-displayedRows": { color: "white" },
-            "& .MuiTablePagination-actions": { color: "white" },
-            "& .MuiTablePagination-selectIcon": { color: "white" },
-            "& .MuiTablePagination-selectLabel": { color: "white" },
-            "& .MuiTablePagination-menuItem": { color: "white" },
-            "& .MuiTablePagination-menuItem:hover": {
-              backgroundColor: "#444",
-              color: "white",
-            },
-            "& .MuiTablePagination-menuItem.selected": {
-              backgroundColor: "#444",
-              color: "white",
-            },
-          }}
-        />
-      </Box>
+          },
+          "& .MuiDataGrid-row:hover": {
+            backgroundColor: "#1e1e1e",
+            color: "white",
+          },
+          "& .MuiDataGrid-footerContainer": {
+            backgroundColor: "#1e1e1e",
+            color: "white",
+          },
+          "& .MuiDataGrid-filler": {
+            backgroundColor: "#1e1e1e",
+            color: "white",
+          },
+          "& .MuiDataGrid-cell:hover": {
+            backgroundColor: "#1e1e1e",
+            color: "white",
+          },
+          "& .MuiDataGrid-footerCell": {
+            backgroundColor: "#1e1e1e",
+            color: "white",
+          },
+          "& .MuiDataGrid-columnHeader": {
+            backgroundColor: "#1e1e1e",
+            color: "white",
+            fontWeight: "bold",
+          },
+          "& .MuiDataGrid-columnHeaderTitle": {
+            color: "white",
+            textAlign: "center",
+            width: "100%",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+          },
+          "& .MuiDataGrid-columnHeaderCheckbox": { color: "white" },
+          "& .MuiDataGrid-rowCheckbox": { color: "white" },
+          "& .MuiTablePagination-displayedRows": { color: "white" },
+          "& .MuiTablePagination-actions": { color: "white" },
+          "& .MuiTablePagination-selectIcon": { color: "white" },
+          "& .MuiTablePagination-selectLabel": { color: "white" },
+          "& .MuiTablePagination-menuItem": { color: "white" },
+          "& .MuiTablePagination-menuItem:hover": {
+            backgroundColor: "#444",
+            color: "white",
+          },
+          "& .MuiTablePagination-menuItem.selected": {
+            backgroundColor: "#444",
+            color: "white",
+          },
+          "& .MuiDataGrid-cell": {
+            backgroundColor: "#1e1e1e",
+            color: "white",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            textAlign: "center",
+          },
+        }}
+      />
       <SettingsDialog />
       <EditDialog
         open={editDialogOpen}
@@ -733,7 +742,7 @@ const exportToCSV = () => {
           {snackbar.message}
         </Alert>
       </Snackbar>
-    </Paper>
+    </div>
   );
 };
 
