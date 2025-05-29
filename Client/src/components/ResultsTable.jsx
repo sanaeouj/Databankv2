@@ -494,12 +494,18 @@ const exportToCSV = () => {
     <Dialog
       open={settingsDialogOpen}
       onClose={() => setSettingsDialogOpen(false)}
-      sx={{ backgroundColor: "#333", color: "white" }}
+      PaperProps={{
+        sx: {
+          bgcolor: "#20293A",
+          color: "#fff",
+          borderRadius: 3,
+        },
+      }}
     >
-      <DialogTitle style={{ backgroundColor: "#333", color: "white" }}>
-        Filter
+      <DialogTitle sx={{ bgcolor: "#232B3B", color: "#fff", fontWeight: 700 }}>
+        Filtrer les colonnes
       </DialogTitle>
-      <DialogContent style={{ backgroundColor: "#333", color: "white" }}>
+      <DialogContent sx={{ bgcolor: "#20293A", color: "#fff" }}>
         {getColumnsFromData(data).map((col) => {
           const visibleCol = visibleColumns.find(
             (vCol) => vCol.field === col.field
@@ -519,20 +525,32 @@ const exportToCSV = () => {
                       )
                     )
                   }
-                  style={{ color: "white" }}
+                  sx={{
+                    color: "#60a5fa",
+                    "&.Mui-checked": { color: "#4ADE80" },
+                  }}
                 />
               }
-              label={col.headerName}
+              label={
+                <Typography sx={{ color: "#bfc9db", fontWeight: 500 }}>
+                  {col.headerName}
+                </Typography>
+              }
             />
           );
         })}
       </DialogContent>
-      <DialogActions style={{ backgroundColor: "#333", color: "white" }}>
+      <DialogActions sx={{ bgcolor: "#232B3B" }}>
         <Button
           onClick={() => setSettingsDialogOpen(false)}
-          style={{ color: "white" }}
+          sx={{
+            color: "#fff",
+            borderColor: "#60a5fa",
+            "&:hover": { color: "#60a5fa", borderColor: "#60a5fa" },
+          }}
+          variant="outlined"
         >
-          Close
+          Fermer
         </Button>
       </DialogActions>
     </Dialog>
@@ -598,53 +616,56 @@ const exportToCSV = () => {
           display: "flex",
           flexWrap: "wrap",
           gap: 2,
-          padding: 2,
+          p: 2,
           bgcolor: "#232B3B",
           borderRadius: 2,
           mb: 2,
         }}
       >
-        {displayedColumns.map((col) => (
-          <TextField
-            key={col.field}
-            label={col.headerName}
-            value={filterValues[col.field] || ""}
-            onChange={(e) =>
-              setFilterValues((prev) => ({
-                ...prev,
-                [col.field]: e.target.value,
-              }))
-            }
-            variant="outlined"
-            size="small"
-            sx={{
-              flex: 1,
-              minWidth: "150px",
-              bgcolor: "#181F2A",
-              input: { color: "#fff" },
-              "& .MuiOutlinedInput-notchedOutline": { borderColor: "#293145" },
-              "& .MuiInputLabel-root": { color: "#bfc9db" },
-            }}
-            InputProps={{ style: { color: "white" } }}
-            InputLabelProps={{ style: { color: "#bfc9db" } }}
-          />
-        ))}
+        {displayedColumns
+          .filter((col) => col.field !== "actions")
+          .map((col) => (
+            <TextField
+              key={col.field}
+              label={col.headerName}
+              value={filterValues[col.field] || ""}
+              onChange={(e) =>
+                setFilterValues((prev) => ({
+                  ...prev,
+                  [col.field]: e.target.value,
+                }))
+              }
+              variant="outlined"
+              size="small"
+              sx={{
+                flex: 1,
+                minWidth: "150px",
+                bgcolor: "#181F2A",
+                input: { color: "#fff" },
+                "& .MuiOutlinedInput-notchedOutline": { borderColor: "#293145" },
+                "& .MuiInputLabel-root": { color: "#bfc9db" },
+              }}
+              InputProps={{ style: { color: "white" } }}
+              InputLabelProps={{ style: { color: "#bfc9db" } }}
+            />
+          ))}
       </Box>
       <Box
         sx={{
           display: "flex",
           justifyContent: "flex-start",
           alignItems: "center",
-          padding: "8px 16px",
+          px: 2,
+          py: 1,
           backgroundColor: "#1e1e1e",
-          color: "white",
+          color: "#fff",
           fontSize: "16px",
           fontWeight: "bold",
           borderRadius: 2,
           mb: 2,
         }}
       >
-        <Typography variant="body1" sx={{ color: "white" }}>
+        <Typography variant="body1" sx={{ color: "#fff" }}>
           Total Filter: {filteredData.length}
         </Typography>
       </Box>
@@ -665,48 +686,48 @@ const exportToCSV = () => {
             borderRadius: 2,
             "& .MuiDataGrid-columnHeaders": {
               backgroundColor: "#232B3B",
-              color: "white",
+              color: "#fff",
               fontWeight: "bold",
             },
             "& .MuiDataGrid-row": {
               backgroundColor: "#1e1e1e",
-              color: "white",
+              color: "#fff",
             },
             "& .MuiDataGrid-row:hover": {
               backgroundColor: "#232B3B",
-              color: "white",
+              color: "#fff",
             },
             "& .MuiDataGrid-footerContainer": {
               backgroundColor: "#232B3B",
-              color: "white",
+              color: "#fff",
             },
             "& .MuiDataGrid-cell": {
               backgroundColor: "#1e1e1e",
-              color: "white",
+              color: "#fff",
               textAlign: "center",
             },
             "& .MuiDataGrid-columnHeaderTitle": {
-              color: "white",
+              color: "#fff",
               textAlign: "center",
               width: "100%",
               display: "flex",
               justifyContent: "center",
               alignItems: "center",
             },
-            "& .MuiDataGrid-columnHeaderCheckbox": { color: "white" },
-            "& .MuiDataGrid-rowCheckbox": { color: "white" },
-            "& .MuiTablePagination-displayedRows": { color: "white" },
-            "& .MuiTablePagination-actions": { color: "white" },
-            "& .MuiTablePagination-selectIcon": { color: "white" },
-            "& .MuiTablePagination-selectLabel": { color: "white" },
-            "& .MuiTablePagination-menuItem": { color: "white" },
+            "& .MuiDataGrid-columnHeaderCheckbox": { color: "#fff" },
+            "& .MuiDataGrid-rowCheckbox": { color: "#fff" },
+            "& .MuiTablePagination-displayedRows": { color: "#fff" },
+            "& .MuiTablePagination-actions": { color: "#fff" },
+            "& .MuiTablePagination-selectIcon": { color: "#fff" },
+            "& .MuiTablePagination-selectLabel": { color: "#fff" },
+            "& .MuiTablePagination-menuItem": { color: "#fff" },
             "& .MuiTablePagination-menuItem:hover": {
               backgroundColor: "#444",
-              color: "white",
+              color: "#fff",
             },
             "& .MuiTablePagination-menuItem.selected": {
               backgroundColor: "#444",
-              color: "white",
+              color: "#fff",
             },
           }}
         />

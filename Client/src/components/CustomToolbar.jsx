@@ -5,24 +5,38 @@ import {
   Button,
   Toolbar,
 } from "@mui/material";
- import DownloadIcon from "@mui/icons-material/Download";
+import DownloadIcon from "@mui/icons-material/Download";
 
 const CustomToolbar = ({ exportToCSV, exportToExcel, setSettingsDialogOpen }) => {
   const [exportMenuAnchorEl, setExportMenuAnchorEl] = useState(null);
 
   return (
     <Toolbar
-      style={{
-        backgroundColor: "#333",
-        marginBottom: "12px",
-        color: "white",
+      sx={{
+        bgcolor: "#20293A",
+        mb: 2,
+        color: "#fff",
+        borderRadius: 2,
+        minHeight: 48,
+        px: 0,
         justifyContent: "flex-start",
       }}
     >
       <Button
         onClick={(e) => setExportMenuAnchorEl(e.currentTarget)}
         startIcon={<DownloadIcon />}
-        style={{ color: "white", margin: "16px" }}
+        sx={{
+          color: "#fff",
+          bgcolor: "#293145",
+          borderRadius: 2,
+          fontWeight: 600,
+          mr: 2,
+          px: 2,
+          "&:hover": {
+            bgcolor: "#60a5fa",
+            color: "#181F2A",
+          },
+        }}
       >
         Export
       </Button>
@@ -30,11 +44,23 @@ const CustomToolbar = ({ exportToCSV, exportToExcel, setSettingsDialogOpen }) =>
         anchorEl={exportMenuAnchorEl}
         open={Boolean(exportMenuAnchorEl)}
         onClose={() => setExportMenuAnchorEl(null)}
+        PaperProps={{
+          sx: {
+            bgcolor: "#20293A",
+            color: "#fff",
+            borderRadius: 2,
+            boxShadow: "0 2px 8px rgba(0,0,0,0.12)",
+          },
+        }}
       >
         <MenuItem
           onClick={() => {
             exportToCSV();
             setExportMenuAnchorEl(null);
+          }}
+          sx={{
+            color: "#fff",
+            "&:hover": { bgcolor: "#293145", color: "#60a5fa" },
           }}
         >
           Download as CSV
@@ -44,11 +70,14 @@ const CustomToolbar = ({ exportToCSV, exportToExcel, setSettingsDialogOpen }) =>
             exportToExcel();
             setExportMenuAnchorEl(null);
           }}
+          sx={{
+            color: "#fff",
+            "&:hover": { bgcolor: "#293145", color: "#60a5fa" },
+          }}
         >
           Download as Excel
         </MenuItem>
       </Menu>
-    
     </Toolbar>
   );
 };

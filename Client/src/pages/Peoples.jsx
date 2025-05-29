@@ -83,7 +83,7 @@ const People = () => {
   const filteredData = applyFilters(data);
 
   return (
-    <Box sx={{ display: "flex", width: "100vw", height: "100vh", bgcolor: "#181F2A" }}>
+    <Box sx={{ display: "flex", width: "80vw", height: "80vh", bgcolor: "#181F2A" }}>
       <Sidebar />
       <Box
         component="main"

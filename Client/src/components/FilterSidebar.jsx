@@ -188,7 +188,7 @@ const FilterSidebar = ({ filters, setFilters, data }) => {
       <Box
         sx={{
           width: 250,
-          p: 3,
+          p: 0, // pas de padding global
           bgcolor: "background.paper",
           color: "text.primary",
           borderRight: "1px solid #232E3E",
@@ -196,33 +196,39 @@ const FilterSidebar = ({ filters, setFilters, data }) => {
           overflowY: "auto",
           display: "flex",
           flexDirection: "column",
-          alignItems: "flex-start",
+          alignItems: "stretch", // pour que tout prenne la largeur
         }}
       >
-        <Typography variant="h5" fontWeight={700} sx={{ color: "#fff", mb: 2 }}>
-          Filters
-        </Typography>
-        <Button
-          variant="outlined"
-          onClick={handleResetFilters}
-          startIcon={<FilterX size={18} color="#fff" />}
-          sx={{
-            mb: 2,
-            color: "#fff",
-            borderColor: alpha("#fff", 0.2),
-            borderRadius: 2,
-            fontWeight: 600,
-            "&:hover": {
-              bgcolor: alpha("#60a5fa", 0.08),
-              borderColor: "#60a5fa",
-              color: "#60a5fa",
-            },
-          }}
-        >
-          Reset Filters
-        </Button>
-        <Divider sx={{ width: "100%", mb: 2, borderColor: "#232E3E" }} />
-        {fields.map(([label, key, condition]) => renderDropdown(label, key, condition))}
+        <Box sx={{ px: 0, py: 3, width: "100%" }}>
+          <Typography variant="h5" fontWeight={700} sx={{ color: "#fff", mb: 2, px: 3 }}>
+            Filters
+          </Typography>
+          <Button
+            variant="outlined"
+            onClick={handleResetFilters}
+            startIcon={<FilterX size={18} color="#fff" />}
+            sx={{
+              mb: 2,
+              color: "#fff",
+              borderColor: alpha("#fff", 0.2),
+              borderRadius: 2,
+              fontWeight: 600,
+              mx: 3,
+              width: "calc(100% - 24px)",
+              "&:hover": {
+                bgcolor: alpha("#60a5fa", 0.08),
+                borderColor: "#60a5fa",
+                color: "#60a5fa",
+              },
+            }}
+          >
+            Reset Filters
+          </Button>
+          <Divider sx={{ width: "100%", mb: 2, borderColor: "#232E3E" }} />
+          <Box sx={{ px: 3 }}>
+            {fields.map(([label, key, condition]) => renderDropdown(label, key, condition))}
+          </Box>
+        </Box>
       </Box>
     </ThemeProvider>
   );
