@@ -8,12 +8,9 @@ import {
   ListItemIcon,
   ListItemText,
   Divider,
-   InputBase,
-  CssBaseline,
-  Fab,
-  Tooltip,
+  InputBase,
+  Avatar,
 } from "@mui/material";
-import { createTheme, ThemeProvider, alpha } from "@mui/material/styles";
 import { NavLink } from "react-router-dom";
 import {
   Home as HomeIcon,
@@ -21,30 +18,13 @@ import {
   Business as BusinessIcon,
   ListAlt as ListAltIcon,
   PersonAdd as PersonAddIcon,
-  BrowserUpdated as BrowserUpdatedIcon,
   Search as SearchIcon,
-  Add as AddIcon,
 } from "@mui/icons-material";
 import Icon from "../assets/Icon.png";
-const darkTheme = createTheme({
-  palette: {
-    mode: "dark",
-    primary: { main: "#60a5fa" },
-    secondary: { main: "#a78bfa" },
-    background: { default: "#333", paper: "#1e1e1e" },
-    text: { primary: "#f3f4f6", secondary: "#d1d5db" },
-  },
-  typography: {
-    fontFamily: ["Inter", "Segoe UI", "Roboto", "sans-serif"].join(","),
-    button: { textTransform: "none" },
-  },
-});
 
-const drawerWidth = 240;
-const miniDrawerWidth = 70;
+const drawerWidth = 250;
 
 const Sidebar = () => {
-  const [isOpen, setIsOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
 
   const sections = [
@@ -54,141 +34,138 @@ const Sidebar = () => {
         { text: "Home", icon: <HomeIcon />, to: "/Home" },
         { text: "People", icon: <PeopleIcon />, to: "/People" },
         { text: "Add People", icon: <PersonAddIcon />, to: "/addpeople" },
-         { text: "Companies", icon: <BusinessIcon />, to: "/companies" },
+        { text: "Companies", icon: <BusinessIcon />, to: "/companies" },
         { text: "Lists", icon: <ListAltIcon />, to: "/lists" },
       ],
     },
   ];
 
+  // Simuler l'utilisateur connecté
+  const user = {
+    name: "User",
+    email: "user@example.com",
+  };
+
   return (
-    <ThemeProvider theme={darkTheme}>
-      <CssBaseline />
-      <Drawer
-        variant="permanent"
-        onMouseEnter={() => setIsOpen(true)}
-        onMouseLeave={() => setIsOpen(false)}
-        sx={{
-          width: isOpen ? drawerWidth : miniDrawerWidth,
-          flexShrink: 0,
-          whiteSpace: "nowrap",
+    <Drawer
+      variant="permanent"
+      sx={{
+        width: drawerWidth,
+        flexShrink: 0,
+        "& .MuiDrawer-paper": {
+          width: drawerWidth,
           boxSizing: "border-box",
-          "& .MuiDrawer-paper": {
-            width: isOpen ? drawerWidth : miniDrawerWidth,
-            transition: "width 0.3s",
-            overflowX: "hidden",
-            backgroundColor: "background.paper",
-            color: "text.primary",
-          },
-        }}
-      >
+          bgcolor: "#1B2431",
+          color: "#fff",
+          borderRight: "none",
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "space-between",
+        },
+      }}
+    >
+      <Box>
+        {/* Logo et titre */}
+        <Box sx={{ display: "flex", alignItems: "center", p: 2, pb: 1 }}>
+          <img src={Icon} alt="Logo" style={{ width: 36, marginRight: 10 }} />
+          <Typography variant="h6" sx={{ fontWeight: 700, letterSpacing: 0.5 }}>
+            IntelligentB2B
+          </Typography>
+        </Box>
+        {/* Barre de recherche */}
         <Box
           sx={{
-            p: 2,
             display: "flex",
-            justifyContent: isOpen ? "flex-start" : "center",
+            alignItems: "center",
+            bgcolor: "#232E3E",
+            borderRadius: 2,
+            mx: 2,
+            mb: 2,
+            height: 40,
+            px: 2,
           }}
         >
-          <img src={Icon} alt="Logo IntelligentB2B" style={{ width: 40 }} />
-        </Box>
-
-        {isOpen && (
-          <Box
+          <SearchIcon sx={{ color: "#9ca3af", mr: 1 }} />
+          <InputBase
+            placeholder="Search..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
             sx={{
-              position: "relative",
-              borderRadius: 2,
-              bgcolor: alpha("#fff", 0.05),
-              "&:hover": { bgcolor: alpha("#fff", 0.1) },
-              mx: 2,
-              mb: 2,
+              color: "#fff",
+              width: "100%",
+              fontSize: 15,
             }}
-          >
-            <Box
-              sx={{
-                position: "absolute",
-                height: "100%",
-                display: "flex",
-                alignItems: "center",
-                pl: 2,
-              }}
-            >
-              <SearchIcon size={20} color="#9ca3af" />
-            </Box>
-            <InputBase
-              placeholder="Search..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              sx={{
-                color: "text.primary",
-                pl: 5,
-                py: 1.5,
-                width: "100%",
-              }}
-            />
-          </Box>
-        )}
-
-        <Divider sx={{ borderColor: "#444" }} />
-
+          />
+        </Box>
+        <Divider sx={{ borderColor: "#232E3E", mb: 1 }} />
+        {/* Sections */}
         <List dense>
           {sections.map((section) => (
             <Box key={section.title}>
-              {isOpen && (
-                <Typography
-                  sx={{ px: 2, pt: 2, fontSize: 12, color: "text.secondary" }}
-                >
-                  {section.title}
-                </Typography>
-              )}
+              <Typography
+                sx={{
+                  px: 3,
+                  pt: 2,
+                  pb: 1,
+                  fontSize: 12,
+                  color: "#8CA0B3",
+                  fontWeight: 600,
+                  letterSpacing: 1,
+                }}
+              >
+                {section.title}
+              </Typography>
               {section.items.map(({ text, icon, to }) => (
                 <ListItemButton
                   component={NavLink}
                   to={to}
                   key={text}
                   sx={{
-                    color: "text.primary",
-                    justifyContent: isOpen ? "initial" : "center",
-                    px: isOpen ? 2 : 1,
+                    color: "#bfc9db",
+                    borderRadius: 2,
+                    mx: 1,
+                    mb: 0.5,
                     "&.active": {
-                      backgroundColor: "primary.main",
+                      backgroundColor: "#60a5fa",
                       color: "#fff",
+                      "& .MuiListItemIcon-root": { color: "#fff" },
                     },
                   }}
                 >
                   <ListItemIcon
                     sx={{
-                      color: "text.primary",
+                      color: "inherit",
                       minWidth: 0,
-                      mr: isOpen ? 2 : "auto",
+                      mr: 2,
                       justifyContent: "center",
                     }}
                   >
                     {icon}
                   </ListItemIcon>
-                  {isOpen && <ListItemText primary={text} />}
+                  <ListItemText primary={text} />
                 </ListItemButton>
               ))}
             </Box>
           ))}
         </List>
-
-        {/* Supprimer ce bloc pour retirer le bouton bleu */}
-        {/* 
-        <Tooltip title="Add New Item" placement="left">
-          <Fab
-            color="primary"
-            sx={{
-              position: "absolute",
-              bottom: 24,
-              right: isOpen ? 24 : 8,
-              transition: "all 0.3s",
-            }}
-          >
-            <AddIcon />
-          </Fab>
-        </Tooltip>
-        */}
-      </Drawer>
-    </ThemeProvider>
+      </Box>
+      {/* Utilisateur en bas */}
+      <Box sx={{ p: 3, pb: 4 }}>
+        <Box sx={{ display: "flex", alignItems: "center" }}>
+          <Avatar sx={{ bgcolor: "#4ADE80", color: "#181F2A", mr: 2 }}>
+            {user.name.charAt(0)}
+          </Avatar>
+          <Box>
+            <Typography sx={{ fontWeight: 600, color: "#fff", fontSize: 16 }}>
+              {user.name}
+            </Typography>
+            <Typography sx={{ color: "#bfc9db", fontSize: 13 }}>
+              {user.email}
+            </Typography>
+          </Box>
+        </Box>
+      </Box>
+    </Drawer>
   );
 };
 
