@@ -46,11 +46,11 @@ const Sidebar = () => {
     {
       title: "PROSPECT & ENRICH",
       items: [
-        { text: "Home", icon: <HomeIcon />, to: "/Home" },
-        { text: "People", icon: <PeopleIcon />, to: "/People" },
-        { text: "Add People", icon: <PersonAddIcon />, to: "/addpeople" },
-        { text: "Companies", icon: <BusinessIcon />, to: "/companies" },
-        { text: "Lists", icon: <ListAltIcon />, to: "/lists" },
+        { text: "Home", icon: <HomeIcon sx={{ color: "#fff" }} />, to: "/Home" },
+        { text: "People", icon: <PeopleIcon sx={{ color: "#fff" }} />, to: "/People" },
+        { text: "Add People", icon: <PersonAddIcon sx={{ color: "#fff" }} />, to: "/addpeople" },
+        { text: "Companies", icon: <BusinessIcon sx={{ color: "#fff" }} />, to: "/companies" },
+        { text: "Lists", icon: <ListAltIcon sx={{ color: "#fff" }} />, to: "/lists" },
       ],
     },
   ];

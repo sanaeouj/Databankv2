@@ -154,28 +154,26 @@ const Home = () => {
   const maxCountry = Math.max(...Object.values(countryData), 1);
 
   return (
-    <Box sx={{ display: "flex", width: "90vw", height: "100vh", bgcolor: "#181F2A" }}>
+    <Box sx={{ display: "flex", width: "100vw", height: "100vh", bgcolor: "#181F2A" }}>
       <Sidebar />
       <Box
         component="main"
         sx={{
-          width: `calc(90vw - ${drawerWidth}px)`,  
+          width: `calc(100vw - ${drawerWidth}px)`,
           minHeight: "100vh",
           bgcolor: "#181F2A",
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
-          justifyContent: "flex-start",
+          justifyContent: "center", // <-- centre verticalement dans la page web
           overflowX: "auto",
-           
         }}
       >
         <Box
           sx={{
             width: "100%",
-            maxWidth: 1400,  
+            maxWidth: 1400,
             mx: "auto",
-            mt: 4,
           }}
         >
           {/* AppBar with Logout */}
