@@ -170,13 +170,6 @@ app.post('/api/clients', async (req, res) => {
       companyRevenue,
     } = req.body;
 
-    // Check if email already exists
-    const emailCheckQuery = 'SELECT * FROM personaldetails WHERE email = $1';
-    const emailCheckResult = await client.query(emailCheckQuery, [email]);
-    if (emailCheckResult.rows.length > 0) {
-      return res.status(400).json({ error: "L'email existe déjà." });
-    }
-
     await client.query('BEGIN');
 
     // Insert Personal Details
