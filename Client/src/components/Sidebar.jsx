@@ -27,6 +27,21 @@ const drawerWidth = 250;
 const Sidebar = () => {
   const [searchTerm, setSearchTerm] = useState("");
 
+  // Récupérer les infos utilisateur depuis le localStorage
+  const storedEmail = localStorage.getItem("userEmail") || "user@example.com";
+  const nameParts = storedEmail.split("@")[0].split(".");
+  const formattedName = nameParts
+    .map(
+      (part) =>
+        part.charAt(0).toUpperCase() + part.slice(1)
+    )
+    .join(" ");
+
+  const user = {
+    name: formattedName,
+    email: storedEmail,
+  };
+
   const sections = [
     {
       title: "PROSPECT & ENRICH",
@@ -39,12 +54,6 @@ const Sidebar = () => {
       ],
     },
   ];
-
-  // Simuler l'utilisateur connecté
-  const user = {
-    name: "User",
-    email: "user@example.com",
-  };
 
   return (
     <Drawer
