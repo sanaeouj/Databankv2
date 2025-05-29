@@ -154,12 +154,11 @@ const Home = () => {
   const maxCountry = Math.max(...Object.values(countryData), 1);
 
   return (
-    <Box sx={{ display: "flex", width: "100vw", height: "100vh", bgcolor: "#181F2A" }}>
+    <Box sx={{ display: "flex", width: `calc(100y% - ${drawerWidth}px)`, height: "100vh", bgcolor: "#181F2A" }}>
       <Sidebar />
       <Box
         component="main"
         sx={{
-          width: `calc(100% - ${drawerWidth}px)`,  
           minHeight: "100vh",
           ml: `${drawerWidth}px`,  
           bgcolor: "#181F2A",
@@ -173,7 +172,6 @@ const Home = () => {
         <Box
           sx={{
             width: "100%",
-            maxWidth: 1200, // largeur max du contenu centré
             mx: "auto",
             mt: 4,
           }}
