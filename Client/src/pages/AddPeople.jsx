@@ -24,7 +24,6 @@ import ExcelJS from "exceljs";
   "Address": "geo.address",
   "State": "geo.state",
   "Country": "geo.country",
-  "Latest Funding Date": "companyRevenue.latestFunding",
   "Latest Funding Amount": "companyRevenue.latestFundingAmount",
   "revenue_companyid": "companyRevenue.companyid",
   "LinkedIn": "social.linkedinUrl",

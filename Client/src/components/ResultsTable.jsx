@@ -58,7 +58,6 @@ const ResultsTable = ({ data = [], filters }) => {
     "revenue_Annual Revenue": "Annual Revenue",
     "revenue_Total Funding": "Total Funding",
     "revenue_Latest Funding Amount": "Latest Funding Amount",
-    "revenue_Latest Funding": "Latest Funding Date",
   };
 const hiddenColumns = [
   "personalid",
@@ -248,7 +247,6 @@ const importMapping = {
   "City": "geo_city",
   "State": "geo_state",
   "Country": "geo_country",
-  "Latest Funding Date": "revenue_Latest Funding",
   "Latest Funding Amount": "revenue_Latest Funding Amount",
   "LinkedIn": "social_Company Linkedin Url",
   "Facebook": "social_Facebook Url",
