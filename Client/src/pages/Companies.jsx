@@ -95,7 +95,7 @@ const Companies = () => {
   );
 
   return (
-    <Box sx={{ display: "flex", width: "83vh", minHeight: "100vh", bgcolor: "#181F2A", m: 0, p: 0 }}>
+    <Box sx={{ display: "flex", width: "73vh", minHeight: "100vh", bgcolor: "#181F2A", m: 0, p: 0 }}>
       <Sidebar />
       <Box
         component="main"
