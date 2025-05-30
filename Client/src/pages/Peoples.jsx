@@ -32,8 +32,7 @@ const People = () => {
     fetchData();
   }, []);
 
-  // Appliquer les filtres
-  const applyFilters = (data) => {
+   const applyFilters = (data) => {
     return data.filter((item) => {
       return Object.entries(filters).every(([key, value]) => {
         if (!value) return true;
@@ -54,7 +53,7 @@ const People = () => {
   const filteredData = applyFilters(data);
 
   return (
-    <Box sx={{ display: "flex", width: "90vw", height: "100vh", bgcolor: "#181F2A" }}>
+    <Box sx={{ display: "flex", width: "90vw", height: "100vh", bgcolor: "#181F2A", m: 0, p: 0 }}>
       <Sidebar />
       <Box
         component="main"
@@ -66,9 +65,11 @@ const People = () => {
           flexDirection: "row",
           alignItems: "stretch",
           overflow: "hidden",
+          m: 0,  
+          p: 0, 
         }}
       >
-         <Box
+        <Box
           sx={{
             width: 250,
             minWidth: 250,
@@ -77,7 +78,7 @@ const People = () => {
             bgcolor: "#20293A",
             borderRight: "1px solid #232B3B",
             p: 0,
-            m: 0,
+            m: 0,  
             display: "flex",
             flexDirection: "column",
             justifyContent: "flex-start",
@@ -100,8 +101,7 @@ const People = () => {
             />
           )}
         </Box>
-        {/* Contenu principal */}
-        <Box
+         <Box
           sx={{
             flexGrow: 1,
             p: 0,
