@@ -154,7 +154,7 @@ const Home = () => {
   const maxCountry = Math.max(...Object.values(countryData), 1);
 
   return (
-    <Box sx={{ display: "flex", width: "100vw", height: "100vh", bgcolor: "#181F2A" }}>
+    <Box sx={{ display: "flex", width: "90vw", height: "100vh", bgcolor: "#181F2A" }}>
       <Sidebar />
       <Box
         component="main"
