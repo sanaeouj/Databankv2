@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Box, Typography, Paper, CircularProgress } from "@mui/material";
+import { Box, Typography, Paper, CircularProgress, TextField, Button } from "@mui/material";
 import Sidebar from "../components/Sidebar";
 import FilterSidebar from "../components/FilterSidebar";
 import ResultsTable from "../components/ResultsTable";
@@ -14,6 +14,13 @@ const People = () => {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showTable, setShowTable] = useState(Object.keys(initialFilter).length > 0);
+
+  // Ajout pour la sauvegarde des filtres
+  const [savedFilters, setSavedFilters] = useState(() => {
+    const stored = localStorage.getItem("savedFilters");
+    return stored ? JSON.parse(stored) : {};
+  });
+  const [filterName, setFilterName] = useState("");
 
   useEffect(() => {
     const fetchData = async () => {
@@ -32,7 +39,7 @@ const People = () => {
     fetchData();
   }, []);
 
-   const applyFilters = (data) => {
+  const applyFilters = (data) => {
     return data.filter((item) => {
       return Object.entries(filters).every(([key, value]) => {
         if (!value) return true;
@@ -48,6 +55,15 @@ const People = () => {
         return normalizedValueToMatch.includes(normalizedFilterValue);
       });
     });
+  };
+
+  // Fonction pour sauvegarder le filtre
+  const handleSaveFilter = () => {
+    if (!filterName.trim()) return;
+    const updated = { ...savedFilters, [filterName]: filters };
+    setSavedFilters(updated);
+    localStorage.setItem("savedFilters", JSON.stringify(updated));
+    setFilterName("");
   };
 
   const filteredData = applyFilters(data);
@@ -116,6 +132,36 @@ const People = () => {
             <Typography variant="h5" sx={{ color: "#fff", fontWeight: 700, mb: 0 }}>
               People List
             </Typography>
+            {/* Champ nom du filtre + bouton Save */}
+            <Box sx={{ display: "flex", gap: 1, mt: 2, mb: 2 }}>
+              <TextField
+                size="small"
+                variant="outlined"
+                placeholder="Enter filter name"
+                value={filterName}
+                onChange={(e) => setFilterName(e.target.value)}
+                sx={{
+                  bgcolor: "#20293A",
+                  input: { color: "#fff" },
+                  "& .MuiOutlinedInput-notchedOutline": { borderColor: "#293145" },
+                  width: 180,
+                }}
+              />
+              <Button
+                variant="contained"
+                onClick={handleSaveFilter}
+                sx={{
+                  bgcolor: "#6366F1",
+                  color: "#fff",
+                  fontWeight: 600,
+                  fontSize: "0.9rem",
+                  px: 2,
+                  "&:hover": { bgcolor: "#4ADE80", color: "#181F2A" },
+                }}
+              >
+                Save
+              </Button>
+            </Box>
           </Box>
           <Box sx={{ flexGrow: 1, px: 4, pb: 4, display: "flex", flexDirection: "column" }}>
             <Paper sx={{ bgcolor: "#20293A", p: 0, borderRadius: 3, minHeight: 400, boxShadow: "none", flexGrow: 1, display: "flex", flexDirection: "column" }}>
