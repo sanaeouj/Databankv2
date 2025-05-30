@@ -340,7 +340,7 @@ const exportToCSV = () => {
                       )
                     )
                   }
-                  style={{ color: "white" }}
+                  sx={{ color: "#6366F1" }}
                 />
               }
               label={col.headerName}
@@ -530,6 +530,12 @@ const exportToCSV = () => {
             alignItems: "center",
             justifyContent: "center",
             textAlign: "center",
+          },
+          "& .MuiCheckbox-root": {
+            color: "#6366F1", // couleur par défaut (bleu)
+          },
+          "& .Mui-checked": {
+            color: "#6366F1 !important", // couleur quand c'est coché (bleu)
           },
         }}
       />

@@ -5,10 +5,7 @@ import FilterSidebar from "../components/FilterSidebar";
 import ResultsTable from "../components/ResultsTable";
 import { useLocation } from "react-router-dom";
 
-// Assuming Sidebar width is defined elsewhere or implicitly, using a variable for clarity
-// If Sidebar component itself defines its width (e.g., 250px), this variable might not be strictly needed here
-// but helps in understanding the layout calculation.
-const sidebarWidth = 250; // Example width, adjust if Sidebar has a different width
+// Assuming Sidebar width is defined elsewhere or implicitly, e.g., 250px
 
 const People = () => {
   const location = useLocation();
@@ -57,11 +54,19 @@ const People = () => {
   const filteredData = applyFilters(data);
 
   return (
-    // Main container: Use 100% width to fill its parent, assuming parent allows full width
-    <Box sx={{ display: "flex", width: "100%", height: "100vh", bgcolor: "#181F2A" }}>
-      <Sidebar /> {/* Assuming Sidebar has its own fixed width (e.g., 250px) */}
+    // Main container: Use 100% width and flex display.
+    // Add gap property here to control spacing between Sidebar and the main content Box.
+    <Box sx={{ 
+        display: "flex", 
+        width: "100%", 
+        height: "100vh", 
+        bgcolor: "#181F2A",
+        gap: '4px' // Apply 4px gap between flex children (Sidebar and main content)
+    }}>
+      <Sidebar /> {/* Sidebar component */}
       
       {/* Main content area (FilterSidebar + ResultsTable) */}
+      {/* Removed ml: '4px' from here */}
       <Box
         component="main"
         sx={{
@@ -72,7 +77,7 @@ const People = () => {
           flexDirection: "row", // Arrange FilterSidebar and ResultsTable side-by-side
           alignItems: "stretch", // Make children fill height
           overflow: "hidden", // Prevent content overflow issues
-          ml: '4px' // Add 4px margin-left to create the desired gap from Sidebar
+          // ml: '4px' // Removed this margin
         }}
       >
          {/* Filter Sidebar Container */}
@@ -140,7 +145,8 @@ const People = () => {
               ) : (
                 <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", flexGrow: 1 }}>
                   <Typography variant="body1" sx={{ color: "gray" }}>
-Please select a filter to view the table.                  </Typography>
+                    Veuillez sélectionner un filtre pour afficher le tableau.
+                  </Typography>
                 </Box>
               )}
             </Paper>
