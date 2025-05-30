@@ -2,8 +2,8 @@ import React, { useState, useRef } from "react";
 import Sidebar from "../components/Sidebar";
 import Papa from "papaparse";
 import ExcelJS from "exceljs";
-import { Box, Typography, Container, CircularProgress, Paper } from "@mui/material";
 
+// Ajout de "Email Status" au mapping
 const importMapping = {
   "First Name": "firstName",
   "Last Name": "lastName",
@@ -12,7 +12,7 @@ const importMapping = {
   "Departments": "departments",    
   "Mobile Phone": "mobilePhone",
   "Email": "email",               
-  "Email Status": "EmailStatus",  
+  "Email Status": "EmailStatus", // Ajouté ici
   "company_companyid": "company.companyid",
   "Company": "company.company",
   "Company Email": "company.email",
@@ -48,7 +48,7 @@ const AddPeople = () => {
     departments: "",
     mobilePhone: "",
     email: "",
-    EmailStatus: "", 
+    EmailStatus: "", // Assurez-vous que l'état initial est cohérent
     company: {
       companyid: "",
       company: "",
@@ -82,7 +82,8 @@ const AddPeople = () => {
   const [isProcessing, setIsProcessing] = useState(false);
   const fileInputRef = useRef(null);
 
-   const inputStyle = {
+  // Styles (inchangés)
+  const inputStyle = {
     margin: "10px",
     width: "100%",
     height: "40px",
@@ -141,7 +142,8 @@ const AddPeople = () => {
     margin: "10px 0",
   };
 
-   const addClientToDatabase = async (client) => {
+  // Fonction API (inchangée)
+  const addClientToDatabase = async (client) => {
     try {
       const response = await fetch(`${API_BASE_URL}/api/clients`, {
         method: "POST",
@@ -161,7 +163,8 @@ const AddPeople = () => {
     }
   };
 
-   const handleFileChange = async (event) => {
+  // Gestion changement fichier (inchangée)
+  const handleFileChange = async (event) => {
     const file = event.target.files[0];
     if (!file) return;
 
@@ -171,9 +174,10 @@ const AddPeople = () => {
       if (fileExtension === "csv") {
         Papa.parse(file, {
           header: true,
-          skipEmptyLines: true,  
+          skipEmptyLines: true, // Ajouté pour ignorer les lignes vides
           complete: (results) => {
-             const filteredData = results.data.filter(row => 
+            // Filtrer les lignes où toutes les valeurs sont vides ou null
+            const filteredData = results.data.filter(row => 
                 Object.values(row).some(val => val !== null && val !== '')
             );
             setFileData(filteredData);
@@ -190,7 +194,8 @@ const AddPeople = () => {
 
         const worksheet = workbook.worksheets[0];
         const headers = [];
-         const headerRow = worksheet.getRow(1);
+        // Lire les en-têtes de la première ligne
+        const headerRow = worksheet.getRow(1);
         if (headerRow) {
             headerRow.eachCell((cell) => {
                 headers.push(cell.value ? cell.value.toString().trim() : '');
@@ -199,13 +204,14 @@ const AddPeople = () => {
         
         const jsonData = [];
         worksheet.eachRow({ includeEmpty: false }, (row, rowNumber) => {
-          if (rowNumber === 1 || row.values.length === 0) return;  
+          if (rowNumber === 1 || row.values.length === 0) return; // Skip header row and empty rows
           const rowData = {};
           let hasValue = false;
           row.eachCell({ includeEmpty: true }, (cell, colNumber) => {
             const header = headers[colNumber - 1];
             if (header) { 
-                 let cellValue = cell.value;
+                // Gestion spéciale pour les objets avec hyperlink (typiques d'ExcelJS pour les liens)
+                let cellValue = cell.value;
                 if (typeof cellValue === 'object' && cellValue !== null && cellValue.text) {
                     cellValue = cellValue.text; // Prendre seulement le texte du lien
                 }
@@ -445,183 +451,150 @@ Erreurs: ${errorCount}`;
 
   // Rendu JSX (structure inchangée, mais les valeurs affichées devraient être correctes)
   return (
-    <Box sx={{ display: "flex", width: "100vw", minHeight: "100vh", bgcolor: "#181F2A" }}>
+    <div style={{ display: "flex", width: "90vw", height: "100vh", backgroundColor: "#242424" }}>
       <Sidebar />
-      <Box
-        component="main"
-        sx={{
-          flexGrow: 1,
-          p: 5,
-          color: "#fff",
-          overflowY: "auto",
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          minHeight: "100vh",
-        }}
-      >
-        <Box sx={{ width: "100%", maxWidth: 1100, mx: "auto" }}>
-          <Typography variant="h4" sx={{ mb: 3, fontWeight: 700 }}>
-            Add People
-          </Typography>
+      <div style={{ flexGrow: 1, padding: "50px", color: "#333", overflowY: "auto" }}>
+        <h1 style={{ color: "#fff", marginBottom: "20px" }}>Add People</h1>
 
-          {/* Section Importation Fichier */}
-          <Paper
-            sx={{
-              bgcolor: "#20293A",
-              borderRadius: 3,
-              p: 3,
-              mb: 4,
-              boxShadow: 2,
-              maxWidth: 900,
-              mx: "auto",
-            }}
+        {/* Section Importation Fichier */}
+        <div style={formContainerStyle}>
+          <h3 style={{ color: "#fff" }}>Import Clients from File</h3>
+          <input
+            type="file"
+            accept=".csv,.xlsx,.xls"
+            onChange={handleFileChange}
+            style={{ fontSize: "16px", margin: "10px", color: "#fff" }}
+            disabled={isProcessing}
+            ref={fileInputRef}
+          />
+          <button 
+            type="button" 
+            style={isProcessing ? disabledButtonStyle : buttonStyle} 
+            onClick={handleAddFile}
+            disabled={isProcessing || fileData.length === 0}
           >
-            <Typography variant="h6" sx={{ mb: 2 }}>Import Clients from File</Typography>
-            <input
-              type="file"
-              accept=".csv,.xlsx,.xls"
-              onChange={handleFileChange}
-              style={{ fontSize: "16px", margin: "10px 0", color: "#fff" }}
-              disabled={isProcessing}
-              ref={fileInputRef}
-            />
-            <button 
-              type="button" 
-              style={isProcessing ? disabledButtonStyle : buttonStyle} 
-              onClick={handleAddFile}
-              disabled={isProcessing || fileData.length === 0}
-            >
-              {isProcessing ? `Traitement...` : "Traiter les données du fichier"} 
-            </button>
-            <Typography sx={{ color: "#aaa", fontSize: 12, mt: 2 }}>
-              Formats supportés: CSV, Excel (.xlsx, .xls). Assurez-vous que les en-têtes correspondent au mapping.
-            </Typography>
-          </Paper>
+            {isProcessing ? `Traitement (${successCount}/${fileData.length})...` : "Traiter les données du fichier"} 
+          </button>
+          <p style={{ color: "#aaa", fontSize: "12px", marginTop: "10px" }}>
+            Formats supportés: CSV, Excel (.xlsx, .xls). Assurez-vous que les en-têtes correspondent au mapping.
+          </p>
+        </div>
 
-          {/* Section Formulaire Manuel */}
-          <Paper
-            component="form"
-            onSubmit={handleSubmit}
-            sx={{
-              bgcolor: "#20293A",
-              borderRadius: 3,
-              p: 3,
-              boxShadow: 2,
-              maxWidth: 900,
-              mx: "auto",
-            }}
-          >
-            <Typography variant="h6" sx={{ mb: 2 }}>Ajouter manuellement</Typography>
-
-            {/* Informations Personnelles */}
-            <Typography sx={{ color: "#8CA0B3", mt: 3, mb: 1, fontWeight: 600 }}>Informations Personnelles</Typography>
-            <Box sx={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 2 }}>
-              {["firstName", "lastName", "title", "seniority", "departments", "mobilePhone", "email"].map((field) => (
-                <div style={inputContainerStyle} key={field}>
-                  <label style={labelStyle}>{formatLabel(field)}{["firstName", "lastName", "email"].includes(field) ? '*' : ''}:</label>
-                  <input
-                    style={inputStyle}
-                    type={field === "email" ? "email" : "text"}
-                    name={field}
-                    value={formData[field] || ''}
-                    onChange={handleChange}
-                    required={["firstName", "lastName", "email"].includes(field)}
-                  />
-                </div>
-              ))}
-              <div style={inputContainerStyle}>
-                <label style={labelStyle}>{formatLabel('EmailStatus')}*:</label>
-                <select
-                  style={{ ...inputStyle, appearance: "auto", lineHeight: "normal" }}
-                  name="EmailStatus"
-                  value={formData.EmailStatus || ''}
+        {/* Section Formulaire Manuel */}
+        <form onSubmit={handleSubmit} style={formContainerStyle}>
+          <h3 style={{ color: "#fff" }}>Ajouter manuellement</h3>
+          
+          {/* Informations Personnelles */}
+          <h4 style={{ color: "#ccc", marginTop: "20px" }}>Informations Personnelles</h4>
+          <div style={containerStyle}>
+            {/* Champs texte simples */}
+            {["firstName", "lastName", "title", "seniority", "departments", "mobilePhone", "email"].map((field) => (
+              <div style={inputContainerStyle} key={field}>
+                <label style={labelStyle}>{formatLabel(field)}{["firstName", "lastName", "email"].includes(field) ? '*' : ''}:</label>
+                <input
+                  style={inputStyle}
+                  type={field === "email" ? "email" : "text"}
+                  name={field}
+                  value={formData[field] || ''} // Afficher chaîne vide si null/undefined
                   onChange={handleChange}
-                  required
-                >
-                  <option value="">-- Sélectionner Statut --</option>
-                  <option value="Valid">Valid</option>
-                  <option value="Extrapolated">Extrapolated</option>
-                  <option value="Unavailable">Unavailable</option>
-                  <option value="Unknown">Unknown</option>
-                </select>
+                  required={["firstName", "lastName", "email"].includes(field)}
+                />
               </div>
-            </Box>
+            ))}
+            {/* Champ Select pour EmailStatus */}
+            <div style={inputContainerStyle}>
+              <label style={labelStyle}>{formatLabel('EmailStatus')}*:</label>
+              <select
+                style={{ ...inputStyle, appearance: "auto", lineHeight: "normal" }} // Style légèrement ajusté pour select
+                name="EmailStatus"
+                value={formData.EmailStatus || ''} // Assurer une valeur contrôlée
+                onChange={handleChange}
+                required
+              >
+                <option value="">-- Sélectionner Statut --</option>
+                <option value="Valid">Valid</option> {/* Ajout de Valid si pertinent */} 
+                <option value="Extrapolated">Extrapolated</option>
+                <option value="Unavailable">Unavailable</option>
+                <option value="Unknown">Unknown</option>
+              </select>
+            </div>
+          </div>
 
-            {/* Informations Compagnie */}
-            <Typography sx={{ color: "#8CA0B3", mt: 3, mb: 1, fontWeight: 600 }}>Informations Compagnie</Typography>
-            <Box sx={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 2 }}>
-              {["company", "email", "phone", "employees", "industry", "seoDescription"].map((field) => (
-                <div style={inputContainerStyle} key={`company.${field}`}>
-                  <label style={labelStyle}>{formatLabel(`company.${field}`)}{field === 'company' ? '*' : ''}:</label>
-                  <input
-                    style={inputStyle}
-                    type={field === "email" ? "email" : "text"}
-                    name={`company.${field}`}
-                    value={formData.company[field] || ''}
-                    onChange={handleChange}
-                    required={field === 'company'}
-                  />
-                </div>
-              ))}
-            </Box>
+          {/* Informations Compagnie */}
+          <h4 style={{ color: "#ccc", marginTop: "20px" }}>Informations Compagnie</h4>
+          <div style={containerStyle}>
+            {/* Utilisation de l'objet company dans formData */}
+            {["company", "email", "phone", "employees", "industry", "seoDescription"].map((field) => (
+              <div style={inputContainerStyle} key={`company.${field}`}>
+                <label style={labelStyle}>{formatLabel(`company.${field}`)}{field === 'company' ? '*' : ''}:</label>
+                <input
+                  style={inputStyle}
+                  type={field === "email" ? "email" : "text"}
+                  name={`company.${field}`}
+                  value={formData.company[field] || ''} // Accès correct à l'objet imbriqué
+                  onChange={handleChange}
+                  required={field === 'company'} // Seul le nom de la compagnie est requis ici
+                />
+              </div>
+            ))}
+          </div>
 
-            {/* Informations Géographiques */}
-            <Typography sx={{ color: "#8CA0B3", mt: 3, mb: 1, fontWeight: 600 }}>Informations Géographiques</Typography>
-            <Box sx={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 2 }}>
-              {["address", "city", "state", "country"].map((field) => (
-                <div style={inputContainerStyle} key={`geo.${field}`}>
-                  <label style={labelStyle}>{formatLabel(`geo.${field}`)}:</label>
-                  <input
-                    style={inputStyle}
-                    type="text"
-                    name={`geo.${field}`}
-                    value={formData.geo[field] || ''}
-                    onChange={handleChange}
-                  />
-                </div>
-              ))}
-            </Box>
+          {/* Informations Géographiques */}
+          <h4 style={{ color: "#ccc", marginTop: "20px" }}>Informations Géographiques</h4>
+          <div style={containerStyle}>
+             {["address", "city", "state", "country"].map((field) => (
+              <div style={inputContainerStyle} key={`geo.${field}`}>
+                <label style={labelStyle}>{formatLabel(`geo.${field}`)}:</label>
+                <input
+                  style={inputStyle}
+                  type="text"
+                  name={`geo.${field}`}
+                  value={formData.geo[field] || ''}
+                  onChange={handleChange}
+                />
+              </div>
+            ))}
+          </div>
 
-            {/* Informations Sociales */}
-            <Typography sx={{ color: "#8CA0B3", mt: 3, mb: 1, fontWeight: 600 }}>Réseaux Sociaux</Typography>
-            <Box sx={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 2 }}>
-              {["linkedinUrl", "facebookUrl", "twitterUrl"].map((field) => (
-                <div style={inputContainerStyle} key={`social.${field}`}>
-                  <label style={labelStyle}>{formatLabel(field)}:</label>
-                  <input
-                    style={inputStyle}
-                    type="url"
-                    name={`social.${field}`}
-                    value={formData.social[field] || ''}
-                    onChange={handleChange}
-                  />
-                </div>
-              ))}
-            </Box>
+          {/* Informations Sociales */}
+          <h4 style={{ color: "#ccc", marginTop: "20px" }}>Réseaux Sociaux</h4>
+           <div style={containerStyle}>
+             {["linkedinUrl", "facebookUrl", "twitterUrl"].map((field) => (
+              <div style={inputContainerStyle} key={`social.${field}`}>
+                <label style={labelStyle}>{formatLabel(field)}:</label>
+                <input
+                  style={inputStyle}
+                  type="url" // Utiliser type url pour une meilleure validation
+                  name={`social.${field}`}
+                  value={formData.social[field] || ''}
+                  onChange={handleChange}
+                />
+              </div>
+            ))}
+          </div>
 
-            {/* Informations Revenus Compagnie */}
-            <Typography sx={{ color: "#8CA0B3", mt: 3, mb: 1, fontWeight: 600 }}>Financement Compagnie</Typography>
-            <Box sx={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 2 }}>
-              {["latestFunding", "latestFundingAmount"].map((field) => (
-                <div style={inputContainerStyle} key={`companyRevenue.${field}`}>
-                  <label style={labelStyle}>{formatLabel(field)}:</label>
-                  <input
-                    style={inputStyle}
-                    type={field === 'latestFunding' ? 'date' : 'number'}
-                    name={`companyRevenue.${field}`}
-                    value={formData.companyRevenue[field] || ''}
-                    onChange={handleChange}
-                  />
-                </div>
-              ))}
-            </Box>
+          {/* Informations Revenus Compagnie */}
+          <h4 style={{ color: "#ccc", marginTop: "20px" }}>Financement Compagnie</h4>
+           <div style={containerStyle}>
+             {["latestFunding", "latestFundingAmount"].map((field) => (
+              <div style={inputContainerStyle} key={`companyRevenue.${field}`}>
+                <label style={labelStyle}>{formatLabel(field)}:</label>
+                <input
+                  style={inputStyle}
+                  type={field === 'latestFunding' ? 'date' : 'number'}
+                  name={`companyRevenue.${field}`}
+                  value={formData.companyRevenue[field] || ''}
+                  onChange={handleChange}
+                />
+              </div>
+            ))}
+          </div>
 
-            <button type="submit" style={buttonStyle}>Ajouter le Client</button>
-          </Paper>
-        </Box>
-      </Box>
-    </Box>
+          {/* Bouton Soumission Manuelle */}
+          <button type="submit" style={buttonStyle}>Ajouter le Client</button>
+        </form>
+      </div>
+    </div>
   );
 };
 
