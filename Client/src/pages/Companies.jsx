@@ -8,9 +8,6 @@ import {
   Paper,
   CssBaseline,
   Container,
-  createTheme,
-  ThemeProvider,
-  alpha,
   Link,
 } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
@@ -19,19 +16,7 @@ import Sidebar from "../components/Sidebar";
 import axios from "axios";
 import CompanyDetails from "./CompanyDetails";
 
-const darkTheme = createTheme({
-  palette: {
-    mode: "dark",
-    primary: { main: "#60a5fa" },
-    secondary: { main: "#a78bfa" },
-    background: { default: "#333", paper: "#1e1e1e" },
-    text: { primary: "#f3f4f6", secondary: "#d1d5db" },
-  },
-  typography: {
-    fontFamily: ["Inter", "Segoe UI", "Roboto", "sans-serif"].join(","),
-    button: { textTransform: "none" },
-  },
-});
+const drawerWidth = 250;
 
 const Companies = () => {
   const [data, setData] = useState([]);
@@ -80,8 +65,9 @@ const Companies = () => {
           component="button"
           onClick={() => setSelectedCompany(params.row)}
           sx={{
-            color: "primary.main",
+            color: "#6366F1",
             textDecoration: "none",
+            fontWeight: 600,
             '&:hover': {
               textDecoration: "underline",
             },
@@ -109,87 +95,115 @@ const Companies = () => {
   );
 
   return (
-    <ThemeProvider theme={darkTheme}>
-      <CssBaseline />
-      <Box sx={{ display: "flex", minHeight: "83vh" }}>
-        <Sidebar />
-        <Box sx={{ flexGrow: 1, p: 3, bgcolor: "background.default" }}>
-          <Container maxWidth="lg">
+    <Box sx={{ display: "flex", width: "83vh", minHeight: "100vh", bgcolor: "#181F2A", m: 0, p: 0 }}>
+      <Sidebar />
+      <Box
+        component="main"
+        sx={{
+          width: `calc(100vw - ${drawerWidth}px)`,
+          minHeight: "100vh",
+          bgcolor: "#181F2A",
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "stretch",
+          overflow: "hidden",
+          m: 0,
+          p: 0,
+        }}
+      >
+        <Box sx={{ px: 4, pt: 4, pb: 2 }}>
+          <Typography
+            variant="h5"
+            sx={{
+              color: "#fff",
+              fontWeight: 700,
+              mb: 0,
+              letterSpacing: 1,
+            }}
+          >
+            Companies List
+          </Typography>
+        </Box>
+        <Box sx={{ flexGrow: 1, px: 4, pb: 4, display: "flex", flexDirection: "column" }}>
+          <Paper
+            sx={{
+              bgcolor: "#20293A",
+              p: 3,
+              borderRadius: 3,
+              mb: 3,
+              boxShadow: "none",
+              display: "flex",
+              alignItems: "center",
+            }}
+          >
+            <SearchIcon size={20} color="#9ca3af" />
+            <InputBase
+              placeholder="Search companies..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              sx={{
+                ml: 2,
+                flex: 1,
+                color: "#fff",
+                width: "100%",
+                fontSize: "16px",
+              }}
+              endAdornment={
+                searchTerm && (
+                  <IconButton onClick={() => setSearchTerm("")}>
+                    <ClearIcon size={16} color="#9ca3af" />
+                  </IconButton>
+                )
+              }
+            />
+          </Paper>
+          <Paper sx={{ bgcolor: "#20293A", p: 0, borderRadius: 3, minHeight: 400, boxShadow: "none", flexGrow: 1, display: "flex", flexDirection: "column" }}>
             {selectedCompany ? (
               <CompanyDetails 
                 company={selectedCompany} 
                 onBack={() => setSelectedCompany(null)} 
               />
             ) : (
-              <>
-                <Typography
-                  variant="h4"
+              <Box sx={{ height: 600, width: "100%" }}>
+                <DataGrid
+                  rows={filteredData}
+                  columns={displayedColumns}
+                  pageSize={10}
+                  rowsPerPageOptions={[5, 10, 20]}
+                  getRowId={(row) => row.company}
                   sx={{
-                    mb: 2,
-                    fontWeight: 700,
-                    background: `linear-gradient(45deg, ${darkTheme.palette.primary.main}, ${darkTheme.palette.secondary.main})`,
-                    WebkitBackgroundClip: "text",
-                    WebkitTextFillColor: "transparent",
+                    bgcolor: "#20293A",
+                    color: "#fff",
+                    borderRadius: 3,
+                    fontSize: "16px",
+                    "& .MuiDataGrid-columnHeaders": {
+                      bgcolor: "#20293A",
+                      color: "#fff",
+                      fontWeight: "bold",
+                    },
+                    "& .MuiDataGrid-row": {
+                      bgcolor: "#20293A",
+                      color: "#fff",
+                    },
+                    "& .MuiDataGrid-row:hover": {
+                      bgcolor: "#232B3B",
+                    },
+                    "& .MuiDataGrid-cell": {
+                      bgcolor: "#20293A",
+                      color: "#fff",
+                    },
+                    "& .MuiDataGrid-footerContainer": {
+                      bgcolor: "#20293A",
+                      color: "#fff",
+                    },
                   }}
-                >
-                  Company Data
-                </Typography>
-                <Paper
-                  sx={{
-                    p: 2,
-                    mb: 3,
-                    display: "flex",
-                    alignItems: "center",
-                    bgcolor: alpha(darkTheme.palette.common.white, 0.05),
-                  }}
-                >
-                  <SearchIcon size={20} color="#9ca3af" />
-                  <InputBase
-                    placeholder="Search companies..."
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                    sx={{
-                      ml: 2,
-                      flex: 1,
-                      color: "text.primary",
-                      width: "100%",
-                    }}
-                    endAdornment={
-                      searchTerm && (
-                        <IconButton onClick={() => setSearchTerm("")}>
-                          <ClearIcon size={16} color="#9ca3af" />
-                        </IconButton>
-                      )
-                    }
-                  />
-                </Paper>
-                <Box sx={{ height: 600, width: "70vw" }}>
-                  <DataGrid
-                    rows={filteredData}
-                    columns={displayedColumns}
-                    pageSize={10}
-                    rowsPerPageOptions={[5, 10, 20]}
-                    getRowId={(row) => row.company}
-                    sx={{
-                      bgcolor: "background.paper",
-                      color: "text.primary",
-                      "& .MuiDataGrid-columnHeaders": {
-                        bgcolor: "background.default",
-                        color: "text.primary",
-                        fontWeight: "bold",
-                      },
-                      "& .MuiDataGrid-row:hover": {
-                        bgcolor: alpha(darkTheme.palette.primary.main, 0.1),
-                      },
-                    }}
-                  />
-                </Box>
-              </>
+                />
+              </Box>
             )}
-          </Container>
+          </Paper>
         </Box>
       </Box>
-    </ThemeProvider>
+    </Box>
   );
 };
 
