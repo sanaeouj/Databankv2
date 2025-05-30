@@ -176,8 +176,7 @@ const Home = () => {
             mx: "auto",
           }}
         >
-          {/* AppBar with Logout */}
-          <AppBar position="static" sx={{ bgcolor: "#181F2A", boxShadow: "none", px: 4 }}>
+           <AppBar position="static" sx={{ bgcolor: "#181F2A", boxShadow: "none", px: 4 }}>
             <Toolbar>
               <Typography variant="h5" sx={{ flexGrow: 1, color: "#fff", fontWeight: 700 }}>
                 Dashboard
@@ -273,7 +272,7 @@ const Home = () => {
                       ))}
                     </Box>
                   </Paper>
-                  {/* Recent Activity */}
+                  {/* Task Manager - prend la place de 2 colonnes */}
                   <Paper
                     sx={{
                       bgcolor: "#20293A",
@@ -282,28 +281,7 @@ const Home = () => {
                       height: 220,
                       display: "flex",
                       flexDirection: "column",
-                    }}
-                  >
-                    <Typography variant="h6" sx={{ color: "#fff", mb: 2 }}>Recent Activity</Typography>
-                    <Box sx={{ flex: 1, overflowY: "auto" }}>
-                      {recentActivity.map((act, i) => (
-                        <Box key={i} sx={{ display: "flex", alignItems: "center", mb: 2 }}>
-                          <Box sx={{ width: 10, height: 10, borderRadius: "50%", bgcolor: act.color, mr: 2 }} />
-                          <Typography sx={{ color: "#fff", fontWeight: 500 }}>{act.text}</Typography>
-                          <Typography sx={{ color: "#bfc9db", ml: "auto", fontSize: 12 }}>{act.time}</Typography>
-                        </Box>
-                      ))}
-                    </Box>
-                  </Paper>
-                  {/* Task Manager */}
-                  <Paper
-                    sx={{
-                      bgcolor: "#20293A",
-                      p: 3,
-                      borderRadius: 3,
-                      height: 220,
-                      display: "flex",
-                      flexDirection: "column",
+                      gridColumn: "span 2",
                     }}
                   >
                     <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 2 }}>
