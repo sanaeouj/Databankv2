@@ -73,7 +73,8 @@ const hiddenColumns = [
   "revenuecompanyid",     
   "socialid",
   "social_companyid",
-  "socialcompanyid"
+  "socialcompanyid",
+  "revenue_Latest Funding" 
 ];
 
   const flattenData = (data) => {
@@ -338,7 +339,7 @@ const exportToCSV = () => {
                       )
                     )
                   }
-                  sx={{ color: "#6366F1" }}
+                  sx={{ color: "#6366F1" }} // bleu
                 />
               }
               label={col.headerName}
