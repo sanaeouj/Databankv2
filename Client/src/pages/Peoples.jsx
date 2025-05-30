@@ -32,8 +32,7 @@ const People = () => {
     fetchData();
   }, []);
 
-  // Appliquer les filtres
-  const applyFilters = (data) => {
+   const applyFilters = (data) => {
     return data.filter((item) => {
       return Object.entries(filters).every(([key, value]) => {
         if (!value) return true;
@@ -54,7 +53,7 @@ const People = () => {
   const filteredData = applyFilters(data);
 
   return (
-    <Box sx={{ display: "flex", width: "100vw", height: "100vh", bgcolor: "#181F2A" }}>
+    <Box sx={{ display: "flex", width: "83vw", height: "100vh", bgcolor: "#181F2A" }}>
       <Sidebar />
       <Box
         component="main"
@@ -68,8 +67,7 @@ const People = () => {
           overflow: "hidden",
         }}
       >
-        {/* Sidebar des filtres, collée sans espace */}
-        <Box
+         <Box
           sx={{
             width: 250,
             minWidth: 250,
