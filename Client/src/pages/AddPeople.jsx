@@ -421,7 +421,7 @@ Erreurs: ${errorCount}`;
    return (
     <div style={{ display: "flex", width: "83vw", minHeight: "100vh", background: "#181F2A" }}>
       <Sidebar />
-      <div style={{ flexGrow: 1, padding: "48px 0", color: "#fff", overflowY: "auto", display: "flex", flexDirection: "column", alignItems: "center" }}>
+      <div style={{ flexGrow: 1, color: "#fff", overflowY: "auto", display: "flex", flexDirection: "column", alignItems: "center" }}>
         <h1 style={{ color: "#fff", marginBottom: "28px", fontWeight: 700, letterSpacing: 1 }}>Add People</h1>
 
          <div style={formContainerStyle}>

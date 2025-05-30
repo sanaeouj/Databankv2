@@ -111,7 +111,7 @@ const Companies = () => {
   return (
     <ThemeProvider theme={darkTheme}>
       <CssBaseline />
-      <Box sx={{ display: "flex", minHeight: "100vh" }}>
+      <Box sx={{ display: "flex", minHeight: "83vh" }}>
         <Sidebar />
         <Box sx={{ flexGrow: 1, p: 3, bgcolor: "background.default" }}>
           <Container maxWidth="lg">
