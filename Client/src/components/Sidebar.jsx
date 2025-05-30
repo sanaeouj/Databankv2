@@ -158,22 +158,7 @@ const Sidebar = () => {
           ))}
         </List>
       </Box>
-      {/* Utilisateur en bas */}
-      <Box sx={{ p: 3, pb: 4 }}>
-        <Box sx={{ display: "flex", alignItems: "center" }}>
-          <Avatar sx={{ bgcolor: "#4ADE80", color: "#181F2A", mr: 2 }}>
-            {user.name.charAt(0)}
-          </Avatar>
-          <Box>
-            <Typography sx={{ fontWeight: 600, color: "#fff", fontSize: 16 }}>
-              {user.name}
-            </Typography>
-            <Typography sx={{ color: "#bfc9db", fontSize: 13 }}>
-              {user.email}
-            </Typography>
-          </Box>
-        </Box>
-      </Box>
+     
     </Drawer>
   );
 };
