@@ -17,8 +17,6 @@ import {
 import * as XLSX from "xlsx";
 import axios from "axios";
 import CustomToolbar from "./CustomToolbar";
-import EditDialog from "./EditDialog";
-import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 
 const ResultsTable = ({ data = [], filters }) => {
@@ -32,15 +30,6 @@ const ResultsTable = ({ data = [], filters }) => {
     open: false,
     message: "",
     severity: "success",
-  });
-  const [editDialogOpen, setEditDialogOpen] = useState(false);
-  const [currentRow, setCurrentRow] = useState(null);
-  const [editFormData, setEditFormData] = useState({
-    personalDetails: {},
-    companyDetails: {},
-    geoDetails: {},
-    revenueDetails: {},
-    socialDetails: {},
   });
   const headerMapping = {
     "First Name": "First Name",
@@ -213,173 +202,6 @@ const hiddenColumns = [
     return new Date(dateString).toLocaleDateString("fr-FR");
   };
 
-  const handleEditClick = (row) => {
-    setCurrentRow(row);
-    const formData = {
-      personalDetails: {
-        firstName: row["First Name"] || "",
-        lastName: row["Last Name"] || "",
-        Title: row.title || "",
-        seniority: row.seniority || "",
-        departments: row.departments || "",
-        mobilePhone: row.mobilePhone || "",
-        email: row.email || "",
-        EmailStatus: row.EmailStatus || "",
-      },
-      companyDetails: {
-        company: row.companycompany || "",
-        email: row.companyEmail || "",
-        phone: row.companyPhone || "",
-        employees: row.companyemployees
-          ? row.companyemployees.toString()
-          : "",
-        industry: row.companyindustry || "",
-        seoDescription: row["companySEO Description"] || "",
-        linkedinlink: row.companylinkedinlink || "",  
-        website: row.companywebsite || "",            
-      },
-      geoDetails: {
-        address: row.geoaddress || "",
-        city: row.geocity || "",
-        state: row.geostate || "",
-        country: row.geocountry || "",
-      },
-      revenueDetails: {
-        latestFunding: row["revenueLatest Funding"]
-          ? formatDateForInput(row["revenueLatest Funding"])
-          : "",
-        latestFundingAmount: row["revenueLatest Funding Amount"]
-          ? row["revenueLatest Funding Amount"].toString()
-          : "",
-      },
-      socialDetails: {
-        linkedinUrl: row["socialCompany Linkedin Url"] || "",
-        facebookUrl: row["socialFacebook Url"] || "",
-        twitterUrl: row["socialTwitter Url"] || "",
-      },
-    };
-    setEditFormData(formData);
-    setEditDialogOpen(true);
-  };
-
-  const formatDateForInput = (dateString) => {
-    if (!dateString) return "";
-    const date = new Date(dateString);
-    return date.toISOString().split("T")[0];
-  };
-
-  const handleUpdateRow = async () => {
-    try {
-      if (!currentRow || !currentRow.personalid) {
-        throw new Error("No row selected for update");
-      }
-      const updateData = {
-        personalDetails: {
-          firstName: editFormData.personalDetails.firstName || "",
-          lastName: editFormData.personalDetails.lastName || "",
-          title: editFormData.personalDetails.title || "",
-          seniority: editFormData.personalDetails.seniority || "",
-          departments: editFormData.personalDetails.departments || "",
-          mobilePhone: editFormData.personalDetails.mobilePhone || "",
-          email: editFormData.personalDetails.email || "",
-          EmailStatus: editFormData.personalDetails.EmailStatus || "",
-        },
-        companyDetails: {
-          company: editFormData.companyDetails.company || "",
-          email: editFormData.companyDetails.email || "",
-          phone: editFormData.companyDetails.phone || "",
-          employees: editFormData.companyDetails.employees || "",
-          industry: editFormData.companyDetails.industry || "",
-          seoDescription: editFormData.companyDetails.seoDescription || "",
-          linkedinlink: editFormData.companyDetails.linkedinlink || "",  
-          website: editFormData.companyDetails.website || "",           
-        },
-        geoDetails: {
-          address: editFormData.geoDetails.address || "",
-          city: editFormData.geoDetails.city || "",
-          state: editFormData.geoDetails.state || "",
-          country: editFormData.geoDetails.country || "",
-        },
-        revenueDetails: {
-          latestFunding: editFormData.revenueDetails.latestFunding || null,
-          latestFundingAmount: editFormData.revenueDetails.latestFundingAmount || "",
-        },
-        socialDetails: {
-          linkedinUrl: editFormData.socialDetails.linkedinUrl || "",
-          facebookUrl: editFormData.socialDetails.facebookUrl || "",
-          twitterUrl: editFormData.socialDetails.twitterUrl || "",
-        },
-      };
-      await axios.put(
-        `https://databank-yndl.onrender.com/api/ressources/update/${currentRow.personalid}`,
-        updateData,
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
-      const updatedData = filteredData.map((row) => {
-        if (row.personalid === currentRow.personalid) {
-          return {
-            ...row,
-            "First Name": updateData.personalDetails.firstName,
-            "Last Name": updateData.personalDetails.lastName,
-            title: updateData.personalDetails.title,
-            seniority: updateData.personalDetails.seniority,
-            departments: updateData.personalDetails.departments,
-            mobilePhone: updateData.personalDetails.mobilePhone,
-            email: updateData.personalDetails.email,
-            EmailStatus: updateData.personalDetails.EmailStatus,
-            company_company: updateData.companyDetails.company,
-            company_Email: updateData.companyDetails.email,
-            company_Phone: updateData.companyDetails.phone,
-            company_employees: updateData.companyDetails.employees,
-            company_industry: updateData.companyDetails.industry,
-            "company_SEO Description": updateData.companyDetails.seoDescription,
-            company_linkedinlink: updateData.companyDetails.linkedinlink,  
-            company_website: updateData.companyDetails.website,            
-            geo_address: updateData.geoDetails.address,
-            geo_city: updateData.geoDetails.city,
-            geo_state: updateData.geoDetails.state,
-            geo_country: updateData.geoDetails.country,
-            "revenue_Latest Funding": updateData.revenueDetails.latestFunding,
-            "revenue_Latest Funding Amount":
-              updateData.revenueDetails.latestFundingAmount,
-            "social_Company Linkedin Url": updateData.socialDetails.linkedinUrl,
-            "social_Facebook Url": updateData.socialDetails.facebookUrl,
-            "social_Twitter Url": updateData.socialDetails.twitterUrl,
-          };
-        }
-        return row;
-      });
-      setFilteredData(updatedData);
-      setEditDialogOpen(false);
-      setSnackbar({
-        open: true,
-        message: "Mise à jour réussie !",
-        severity: "success",
-      });
-    } catch (error) {
-      console.error("Erreur lors de la mise à jour:", error);
-      let errorMessage = "Échec de la mise à jour";
-      if (error.response) {
-        if (error.response.data && error.response.data.error) {
-          errorMessage = error.response.data.error;
-        }
-      } else if (error.request) {
-        errorMessage = "Pas de réponse du serveur";
-      } else {
-        errorMessage = error.message;
-      }
-      setSnackbar({
-        open: true,
-        message: errorMessage,
-        severity: "error",
-      });
-    }
-  };
-
   const handleDeleteRow = async (row) => {
     if (!window.confirm(`Are you sure you want to delete this row?`)) {
       return;
@@ -493,12 +315,12 @@ const exportToCSV = () => {
     <Dialog
       open={settingsDialogOpen}
       onClose={() => setSettingsDialogOpen(false)}
-      sx={{ backgroundColor: "#333", color: "white" }}
+      sx={{ backgroundColor: "#20293A", color: "white" }}
     >
-      <DialogTitle style={{ backgroundColor: "#333", color: "white" }}>
+      <DialogTitle style={{ backgroundColor: "#20293A", color: "white" }}>
         Filter
       </DialogTitle>
-      <DialogContent style={{ backgroundColor: "#333", color: "white" }}>
+      <DialogContent style={{ backgroundColor: "#20293A", color: "white" }}>
         {getColumnsFromData(data).map((col) => {
           const visibleCol = visibleColumns.find(
             (vCol) => vCol.field === col.field
@@ -526,7 +348,7 @@ const exportToCSV = () => {
           );
         })}
       </DialogContent>
-      <DialogActions style={{ backgroundColor: "#333", color: "white" }}>
+      <DialogActions style={{ backgroundColor: "#20293A", color: "white" }}>
         <Button
           onClick={() => setSettingsDialogOpen(false)}
           style={{ color: "white" }}
@@ -549,15 +371,6 @@ const exportToCSV = () => {
       renderCell: (params) => (
         <div style={{ display: "flex", gap: "8px" }}>
           <Button
-            onClick={() => handleEditClick(params.row)}
-            startIcon={<EditIcon />}
-            variant="contained"
-            color="primary"
-            size="small"
-          >
-            Edit
-          </Button>
-          <Button
             onClick={() => handleDeleteRow(params.row)}
             startIcon={<DeleteIcon />}
             variant="contained"
@@ -576,7 +389,7 @@ const exportToCSV = () => {
       style={{
         height: "90vh",
         overflowX: "auto",
-        backgroundColor: "#333",
+        backgroundColor: "#20293A",
         color: "white",
       }}
     >
@@ -621,7 +434,7 @@ const exportToCSV = () => {
           justifyContent: "flex-start",
           alignItems: "center",
           padding: "8px 16px",
-          backgroundColor: "#1e1e1e",
+          backgroundColor: "#20293A",
           color: "white",
           fontSize: "16px",
           fontWeight: "bold",
@@ -644,7 +457,7 @@ const exportToCSV = () => {
           fontSize: "20px",
           height: "100%",
           overflowX: "auto",
-          backgroundColor: "#333",
+          backgroundColor: "#20293A",
           color: "white",
           width: `${Math.max(
             displayedColumns.reduce(
@@ -654,36 +467,36 @@ const exportToCSV = () => {
             window.innerWidth
           )}px`,
           "& .MuiDataGrid-columnHeaders": {
-            backgroundColor: "#333",
+            backgroundColor: "#20293A",
             color: "white",
             fontWeight: "bold",
           },
           "& .MuiDataGrid-row": {
-            backgroundColor: "#1e1e1e",
+            backgroundColor: "#20293A",
             color: "white",
           },
           "& .MuiDataGrid-row:hover": {
-            backgroundColor: "#1e1e1e",
+            backgroundColor: "#20293A",
             color: "white",
           },
           "& .MuiDataGrid-footerContainer": {
-            backgroundColor: "#1e1e1e",
+            backgroundColor: "#20293A",
             color: "white",
           },
           "& .MuiDataGrid-filler": {
-            backgroundColor: "#1e1e1e",
+            backgroundColor: "#20293A",
             color: "white",
           },
           "& .MuiDataGrid-cell:hover": {
-            backgroundColor: "#1e1e1e",
+            backgroundColor: "#20293A",
             color: "white",
           },
           "& .MuiDataGrid-footerCell": {
-            backgroundColor: "#1e1e1e",
+            backgroundColor: "#20293A",
             color: "white",
           },
           "& .MuiDataGrid-columnHeader": {
-            backgroundColor: "#1e1e1e",
+            backgroundColor: "#20293A",
             color: "white",
             fontWeight: "bold",
           },
@@ -711,7 +524,7 @@ const exportToCSV = () => {
             color: "white",
           },
           "& .MuiDataGrid-cell": {
-            backgroundColor: "#1e1e1e",
+            backgroundColor: "#20293A",
             color: "white",
             display: "flex",
             alignItems: "center",
@@ -721,13 +534,6 @@ const exportToCSV = () => {
         }}
       />
       <SettingsDialog />
-      <EditDialog
-        open={editDialogOpen}
-        onClose={() => setEditDialogOpen(false)}
-        editFormData={editFormData}
-        setEditFormData={setEditFormData}
-        handleUpdateRow={handleUpdateRow}
-      />
       <Snackbar
         open={snackbar.open}
         autoHideDuration={6000}
