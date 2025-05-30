@@ -5,7 +5,7 @@ import FilterSidebar from "../components/FilterSidebar";
 import ResultsTable from "../components/ResultsTable";
 import { useLocation } from "react-router-dom";
 
-// Assuming Sidebar width is defined elsewhere or implicitly, e.g., 250px
+const drawerWidth = 250;
 
 const People = () => {
   const location = useLocation();
@@ -32,8 +32,8 @@ const People = () => {
     fetchData();
   }, []);
 
-   const applyFilters = (data) => {
-    // Filtering logic remains the same
+  // Appliquer les filtres
+  const applyFilters = (data) => {
     return data.filter((item) => {
       return Object.entries(filters).every(([key, value]) => {
         if (!value) return true;
@@ -54,43 +54,30 @@ const People = () => {
   const filteredData = applyFilters(data);
 
   return (
-    // Main container: Use 100% width and flex display.
-    // Add gap property here to control spacing between Sidebar and the main content Box.
-    <Box sx={{ 
-        display: "flex", 
-        width: "100%", 
-        height: "100vh", 
-        bgcolor: "#181F2A",
-        gap: '4px' // Apply 4px gap between flex children (Sidebar and main content)
-    }}>
-      <Sidebar /> {/* Sidebar component */}
-      
-      {/* Main content area (FilterSidebar + ResultsTable) */}
-      {/* Removed ml: '4px' from here */}
+    <Box sx={{ display: "flex", width: "90vw", height: "100vh", bgcolor: "#181F2A" }}>
+      <Sidebar />
       <Box
         component="main"
         sx={{
-          flexGrow: 1, // Allow this Box to take remaining horizontal space
+          width: `calc(100vw - ${drawerWidth}px)`,
           minHeight: "100vh",
-          bgcolor: "#181F2A", // Background for the main content area
+          bgcolor: "#181F2A",
           display: "flex",
-          flexDirection: "row", // Arrange FilterSidebar and ResultsTable side-by-side
-          alignItems: "stretch", // Make children fill height
-          overflow: "hidden", // Prevent content overflow issues
-          // ml: '4px' // Removed this margin
+          flexDirection: "row",
+          alignItems: "stretch",
+          overflow: "hidden",
         }}
       >
-         {/* Filter Sidebar Container */}
          <Box
           sx={{
-            width: 250, // Fixed width for the filter sidebar
+            width: 250,
             minWidth: 250,
             maxWidth: 250,
-            height: "100vh", // Full height
-            bgcolor: "#20293A", // Background for the filter sidebar itself
-            borderRight: "1px solid #232B3B", // Optional border
-            p: 0, // No padding inside filter container
-            m: 0, // No margin around filter container
+            height: "100vh",
+            bgcolor: "#20293A",
+            borderRight: "1px solid #232B3B",
+            p: 0,
+            m: 0,
             display: "flex",
             flexDirection: "column",
             justifyContent: "flex-start",
@@ -113,27 +100,23 @@ const People = () => {
             />
           )}
         </Box>
-        
-        {/* Results Area (People List + Table) */}
+        {/* Contenu principal */}
         <Box
           sx={{
-            flexGrow: 1, // Allow this area to take remaining space after FilterSidebar
-            height: "100vh", // Full height
-            overflow: "auto", // Allow scrolling if content exceeds height
+            flexGrow: 1,
+            p: 0,
+            height: "100vh",
+            overflow: "auto",
             display: "flex",
             flexDirection: "column",
-            bgcolor: "#181F2A", // Background for the results area
-            p: 0, // Reset padding, specific padding applied below
+            bgcolor: "#181F2A",
           }}
         >
-          {/* Header: People List */}
           <Box sx={{ px: 4, pt: 4, pb: 2 }}>
             <Typography variant="h5" sx={{ color: "#fff", fontWeight: 700, mb: 0 }}>
               People List
             </Typography>
           </Box>
-          
-          {/* Table Container */}
           <Box sx={{ flexGrow: 1, px: 4, pb: 4, display: "flex", flexDirection: "column" }}>
             <Paper sx={{ bgcolor: "#20293A", p: 0, borderRadius: 3, minHeight: 400, boxShadow: "none", flexGrow: 1, display: "flex", flexDirection: "column" }}>
               {loading ? (
@@ -158,4 +141,3 @@ const People = () => {
 };
 
 export default People;
-
