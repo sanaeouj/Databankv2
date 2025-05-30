@@ -22,14 +22,16 @@ import CompanyDetails from "./CompanyDetails";
 const darkTheme = createTheme({
   palette: {
     mode: "dark",
-    primary: { main: "#60a5fa" },
-    secondary: { main: "#a78bfa" },
-    background: { default: "#333", paper: "#1e1e1e" },
-    text: { primary: "#f3f4f6", secondary: "#d1d5db" },
+    primary: { main: "#6366F1" },
+    secondary: { main: "#60a5fa" },
+    background: { default: "#181F2A", paper: "#20293A" },
+    text: { primary: "#fff", secondary: "#bfc9db" },
   },
   typography: {
     fontFamily: ["Inter", "Segoe UI", "Roboto", "sans-serif"].join(","),
     button: { textTransform: "none" },
+    h4: { fontWeight: 700, letterSpacing: 1 },
+    h5: { fontWeight: 700, letterSpacing: 1 },
   },
 });
 
@@ -111,10 +113,10 @@ const Companies = () => {
   return (
     <ThemeProvider theme={darkTheme}>
       <CssBaseline />
-      <Box sx={{ display: "flex", minHeight: "100vh" }}>
+      <Box sx={{ display: "flex", minHeight: "100vh", bgcolor: "#181F2A" }}>
         <Sidebar />
-        <Box sx={{ flexGrow: 1, p: 3, bgcolor: "background.default" }}>
-          <Container maxWidth="lg">
+        <Box sx={{ flexGrow: 1, p: 3, bgcolor: "#181F2A" }}>
+          <Container maxWidth="lg" sx={{ p: 0 }}>
             {selectedCompany ? (
               <CompanyDetails 
                 company={selectedCompany} 
@@ -127,12 +129,11 @@ const Companies = () => {
                   sx={{
                     mb: 2,
                     fontWeight: 700,
-                    background: `linear-gradient(45deg, ${darkTheme.palette.primary.main}, ${darkTheme.palette.secondary.main})`,
-                    WebkitBackgroundClip: "text",
-                    WebkitTextFillColor: "transparent",
+                    color: "#fff",
+                    fontFamily: "Inter, Segoe UI, Roboto, sans-serif",
                   }}
                 >
-                  Company Data
+                  Companies List
                 </Typography>
                 <Paper
                   sx={{
@@ -140,10 +141,12 @@ const Companies = () => {
                     mb: 3,
                     display: "flex",
                     alignItems: "center",
-                    bgcolor: alpha(darkTheme.palette.common.white, 0.05),
+                    bgcolor: "#232B3B",
+                    borderRadius: 3,
+                    boxShadow: "none",
                   }}
                 >
-                  <SearchIcon size={20} color="#9ca3af" />
+                  <SearchIcon size={20} color="#8CA0B3" />
                   <InputBase
                     placeholder="Search companies..."
                     value={searchTerm}
@@ -151,13 +154,14 @@ const Companies = () => {
                     sx={{
                       ml: 2,
                       flex: 1,
-                      color: "text.primary",
-                      width: "100%",
+                      color: "#fff",
+                      fontFamily: "Inter, Segoe UI, Roboto, sans-serif",
+                      fontSize: "16px",
                     }}
                     endAdornment={
                       searchTerm && (
                         <IconButton onClick={() => setSearchTerm("")}>
-                          <ClearIcon size={16} color="#9ca3af" />
+                          <ClearIcon size={16} color="#8CA0B3" />
                         </IconButton>
                       )
                     }
@@ -171,15 +175,36 @@ const Companies = () => {
                     rowsPerPageOptions={[5, 10, 20]}
                     getRowId={(row) => row.company}
                     sx={{
-                      bgcolor: "background.paper",
-                      color: "text.primary",
+                      bgcolor: "#20293A",
+                      color: "#fff",
+                      fontFamily: "Inter, Segoe UI, Roboto, sans-serif",
+                      fontSize: "15px",
+                      borderRadius: 3,
                       "& .MuiDataGrid-columnHeaders": {
-                        bgcolor: "background.default",
-                        color: "text.primary",
+                        bgcolor: "#20293A",
+                        color: "#8CA0B3",
                         fontWeight: "bold",
+                        fontSize: "15px",
+                        fontFamily: "Inter, Segoe UI, Roboto, sans-serif",
+                      },
+                      "& .MuiDataGrid-row": {
+                        bgcolor: "#20293A",
+                        color: "#fff",
+                        fontFamily: "Inter, Segoe UI, Roboto, sans-serif",
                       },
                       "& .MuiDataGrid-row:hover": {
-                        bgcolor: alpha(darkTheme.palette.primary.main, 0.1),
+                        bgcolor: "#232B3B",
+                      },
+                      "& .MuiDataGrid-cell": {
+                        bgcolor: "#20293A",
+                        color: "#fff",
+                        fontFamily: "Inter, Segoe UI, Roboto, sans-serif",
+                        fontSize: "15px",
+                      },
+                      "& .MuiDataGrid-footerContainer": {
+                        bgcolor: "#20293A",
+                        color: "#8CA0B3",
+                        fontFamily: "Inter, Segoe UI, Roboto, sans-serif",
                       },
                     }}
                   />
