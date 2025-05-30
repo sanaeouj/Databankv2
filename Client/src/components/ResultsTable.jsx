@@ -343,7 +343,7 @@ const ResultsTable = ({ data = [], filters }) => {
           disableRowSelectionOnClick
           sx={{
             fontSize: "16px",
-            backgroundColor: "#1e1e1e",
+            backgroundColor: "#20293A",
             color: "white",
             borderRadius: 2,
             "& .MuiDataGrid-columnHeaders": {
@@ -352,7 +352,7 @@ const ResultsTable = ({ data = [], filters }) => {
               fontWeight: "bold",
             },
             "& .MuiDataGrid-row": {
-              backgroundColor: "#1e1e1e",
+              backgroundColor: "#20293A",
               color: "#fff",
             },
             "& .MuiDataGrid-row:hover": {
@@ -364,7 +364,7 @@ const ResultsTable = ({ data = [], filters }) => {
               color: "#fff",
             },
             "& .MuiDataGrid-cell": {
-              backgroundColor: "#1e1e1e",
+              backgroundColor: "#20293A",
               color: "#fff",
               textAlign: "center",
             },
