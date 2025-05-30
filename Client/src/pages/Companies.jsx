@@ -124,83 +124,86 @@ const Companies = () => {
             Companies List
           </Typography>
         </Box>
-        <Box sx={{ flexGrow: 1, px: 4, pb: 4, display: "flex", flexDirection: "column" }}>
-          <Paper
-            sx={{
-              bgcolor: "#20293A",
-              p: 3,
-              borderRadius: 3,
-              mb: 3,
-              boxShadow: "none",
-              display: "flex",
-              alignItems: "center",
-            }}
-          >
-            <SearchIcon size={20} color="#9ca3af" />
-            <InputBase
-              placeholder="Search companies..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
+        <Box sx={{ flexGrow: 1, px: 4, pb: 4, display: "flex", flexDirection: "column", alignItems: "center" }}>
+          <Box sx={{ width: "100%", maxWidth: 1200, mx: "auto" }}>
+            <Paper
               sx={{
-                ml: 2,
-                flex: 1,
-                color: "#fff",
+                bgcolor: "#20293A",
+                p: 3,
+                borderRadius: 3,
+                mb: 3,
+                boxShadow: "none",
+                display: "flex",
+                alignItems: "center",
                 width: "100%",
-                fontSize: "16px",
               }}
-              endAdornment={
-                searchTerm && (
-                  <IconButton onClick={() => setSearchTerm("")}>
-                    <ClearIcon size={16} color="#9ca3af" />
-                  </IconButton>
-                )
-              }
-            />
-          </Paper>
-          <Paper sx={{ bgcolor: "#20293A", p: 0, borderRadius: 3, minHeight: 400, boxShadow: "none", flexGrow: 1, display: "flex", flexDirection: "column" }}>
-            {selectedCompany ? (
-              <CompanyDetails 
-                company={selectedCompany} 
-                onBack={() => setSelectedCompany(null)} 
+            >
+              <SearchIcon size={20} color="#9ca3af" />
+              <InputBase
+                placeholder="Search companies..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                sx={{
+                  ml: 2,
+                  flex: 1,
+                  color: "#fff",
+                  width: "100%",
+                  fontSize: "16px",
+                }}
+                endAdornment={
+                  searchTerm && (
+                    <IconButton onClick={() => setSearchTerm("")}>
+                      <ClearIcon size={16} color="#9ca3af" />
+                    </IconButton>
+                  )
+                }
               />
-            ) : (
-              <Box sx={{ height: 600, width: "100%" }}>
-                <DataGrid
-                  rows={filteredData}
-                  columns={displayedColumns}
-                  pageSize={10}
-                  rowsPerPageOptions={[5, 10, 20]}
-                  getRowId={(row) => row.company}
-                  sx={{
-                    bgcolor: "#20293A",
-                    color: "#fff",
-                    borderRadius: 3,
-                    fontSize: "16px",
-                    "& .MuiDataGrid-columnHeaders": {
-                      bgcolor: "#20293A",
-                      color: "#fff",
-                      fontWeight: "bold",
-                    },
-                    "& .MuiDataGrid-row": {
-                      bgcolor: "#20293A",
-                      color: "#fff",
-                    },
-                    "& .MuiDataGrid-row:hover": {
-                      bgcolor: "#232B3B",
-                    },
-                    "& .MuiDataGrid-cell": {
-                      bgcolor: "#20293A",
-                      color: "#fff",
-                    },
-                    "& .MuiDataGrid-footerContainer": {
-                      bgcolor: "#20293A",
-                      color: "#fff",
-                    },
-                  }}
+            </Paper>
+            <Paper sx={{ bgcolor: "#20293A", p: 0, borderRadius: 3, minHeight: 400, boxShadow: "none", flexGrow: 1, display: "flex", flexDirection: "column", width: "100%" }}>
+              {selectedCompany ? (
+                <CompanyDetails 
+                  company={selectedCompany} 
+                  onBack={() => setSelectedCompany(null)} 
                 />
-              </Box>
-            )}
-          </Paper>
+              ) : (
+                <Box sx={{ height: 600, width: "100%" }}>
+                  <DataGrid
+                    rows={filteredData}
+                    columns={displayedColumns}
+                    pageSize={10}
+                    rowsPerPageOptions={[5, 10, 20]}
+                    getRowId={(row) => row.company}
+                    sx={{
+                      bgcolor: "#20293A",
+                      color: "#fff",
+                      borderRadius: 3,
+                      fontSize: "16px",
+                      "& .MuiDataGrid-columnHeaders": {
+                        bgcolor: "#20293A",
+                        color: "#fff",
+                        fontWeight: "bold",
+                      },
+                      "& .MuiDataGrid-row": {
+                        bgcolor: "#20293A",
+                        color: "#fff",
+                      },
+                      "& .MuiDataGrid-row:hover": {
+                        bgcolor: "#232B3B",
+                      },
+                      "& .MuiDataGrid-cell": {
+                        bgcolor: "#20293A",
+                        color: "#fff",
+                      },
+                      "& .MuiDataGrid-footerContainer": {
+                        bgcolor: "#20293A",
+                        color: "#fff",
+                      },
+                    }}
+                  />
+                </Box>
+              )}
+            </Paper>
+          </Box>
         </Box>
       </Box>
     </Box>
