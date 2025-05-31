@@ -84,7 +84,7 @@ const AddPeople = () => {
     margin: "0",  
     width: "80px",
     height: "32px",  
-    marginTop: "10px",
+    margin: "10px",
     padding: "10px",
     fontSize: "13px",
     borderRadius: "6px",
