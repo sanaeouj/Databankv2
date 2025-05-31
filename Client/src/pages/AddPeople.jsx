@@ -81,12 +81,12 @@ const AddPeople = () => {
   const fileInputRef = useRef(null);
 
    const inputStyle = {
-    margin: "10px",
+    margin: "0", // margin retiré ici, géré par le container
     width: "100%",
-    height: "40px",
-    padding: "10px",
+    height: "32px", // réduit la hauteur
+    padding: "6px 10px",
     fontSize: "13px",
-    borderRadius: "8px",
+    borderRadius: "6px",
     border: "1px solid #293145",
     backgroundColor: "#20293A",
     color: "#fff",
@@ -103,14 +103,14 @@ const AddPeople = () => {
     margin: "10px 0",
     display: "grid",
     gridTemplateColumns: "1fr 1fr 1fr",
-    gap: "20px",
+    gap: "18px", // espace horizontal entre colonnes
     alignItems: "center",
   };
   const inputContainerStyle = {
     display: "flex",
     flexDirection: "column",
-    margin: "10px 0",
-    gap: "8px",
+    margin: "0 0 14px 0", // Ajoute du margin-bottom entre chaque champ
+    gap: "4px",
     fontSize: "13px",
   };
   const buttonStyle = {
