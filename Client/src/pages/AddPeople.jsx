@@ -81,9 +81,9 @@ const AddPeople = () => {
   const fileInputRef = useRef(null);
 
    const inputStyle = {
-    margin: "0", // margin retiré ici, géré par le container
-    width: "100%",
-    height: "32px", // réduit la hauteur
+    margin: "0",  
+    width: "80%",
+    height: "32px",  
     padding: "6px 10px",
     fontSize: "13px",
     borderRadius: "6px",
@@ -100,16 +100,16 @@ const AddPeople = () => {
     fontWeight: 500,
   };
   const containerStyle = {
-    margin: "10px 0",
+    margin: "10px 10px 0 10px",
     display: "grid",
     gridTemplateColumns: "1fr 1fr 1fr",
-    gap: "18px", // espace horizontal entre colonnes
+    gap: "18px",  
     alignItems: "center",
   };
   const inputContainerStyle = {
     display: "flex",
     flexDirection: "column",
-    margin: "0 0 14px 0", // Ajoute du margin-bottom entre chaque champ
+    margin: "0 0 14px 0",  
     gap: "4px",
     fontSize: "13px",
   };
@@ -143,7 +143,6 @@ const AddPeople = () => {
     border: "1px solid #293145",
   };
 
-  // Fonction API (inchangée)
   const addClientToDatabase = async (client) => {
     try {
       const response = await fetch(`${API_BASE_URL}/api/clients`, {
@@ -151,12 +150,10 @@ const AddPeople = () => {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(client),
       });
-      
       if (!response.ok) {
         const errorText = await response.text();
         throw new Error(errorText || "Failed to add client");
       }
-      
       return await response.json();
     } catch (error) {
       console.error("Error adding client:", error);
@@ -164,7 +161,7 @@ const AddPeople = () => {
     }
   };
 
-   const handleFileChange = async (event) => {
+  const handleFileChange = async (event) => {
     const file = event.target.files[0];
     if (!file) return;
 
@@ -242,123 +239,118 @@ const AddPeople = () => {
     setIsProcessing(true);
     let successCount = 0;
     let errorCount = 0;
-    const errors = [];  
+    const errors = [];
 
     try {
       for (const [index, client] of fileData.entries()) {
-         if (!client || Object.keys(client).length === 0 || Object.values(client).every(v => v === null || v === '')) {
-            console.warn(`Skipping empty row ${index + 1}`);
-            continue;
+        if (!client || Object.keys(client).length === 0 || Object.values(client).every(v => v === null || v === '')) {
+          console.warn(`Skipping empty row ${index + 1}`);
+          continue;
         }
 
         try {
-           let newClient = JSON.parse(JSON.stringify({
-              firstName: "", lastName: "", title: "", seniority: "", departments: "",
-              mobilePhone: "", email: "", EmailStatus: "", company: { companyid: "", company: "", email: "", phone: "", employees: "", industry: "", seoDescription: "", personalid: "" },
-              geo: { address: "", city: "", state: "", country: "" }, social: { linkedinUrl: "", facebookUrl: "", twitterUrl: "", companyid: "" },
-              companyRevenue: { companyid: "", latestFunding: "", latestFundingAmount: "" }
+          let newClient = JSON.parse(JSON.stringify({
+            firstName: "", lastName: "", title: "", seniority: "", departments: "",
+            mobilePhone: "", email: "", EmailStatus: "", company: { companyid: "", company: "", email: "", phone: "", employees: "", industry: "", seoDescription: "", personalid: "" },
+            geo: { address: "", city: "", state: "", country: "" }, social: { linkedinUrl: "", facebookUrl: "", twitterUrl: "", companyid: "" },
+            companyRevenue: { companyid: "", latestFunding: "", latestFundingAmount: "" }
           }));
 
           Object.entries(client).forEach(([csvKey, value]) => {
-            if (!csvKey) return; 
+            if (!csvKey) return;
             const normKey = normalizeKey(csvKey);
             const formKey = normalizedMapping[normKey];
-            
             if (!formKey) {
-               return;
+              return;
             }
-
             let processedValue = value;
-
-             if ((formKey === 'email' || formKey === 'company.email')) {
-                if (typeof value === 'string') {
-                     if (value.trim().startsWith('{') && value.trim().endsWith('}')) {
-                        try {
-                             const jsonString = value.replace(/""/g, '"'); 
-                            const emailObj = JSON.parse(jsonString);
-                            processedValue = emailObj.text || '';  
-                        } catch (e) {
-                            console.warn(`Impossible de parser l'email JSON: '${value}' à la ligne ${index + 1}. Utilisation de la valeur brute. Erreur: ${e.message}`);
-                            processedValue = value;  
-                        }
-                    } else {
-                        processedValue = value;  
-                    }
-                } else if (typeof value === 'object' && value !== null && value.text) {
-                     processedValue = value.text;
-                } else if (value === null || value === undefined) {
-                    processedValue = ""; 
+            if ((formKey === 'email' || formKey === 'company.email')) {
+              if (typeof value === 'string') {
+                if (value.trim().startsWith('{') && value.trim().endsWith('}')) {
+                  try {
+                    const jsonString = value.replace(/""/g, '"');
+                    const emailObj = JSON.parse(jsonString);
+                    processedValue = emailObj.text || '';
+                  } catch (e) {
+                    console.warn(`Unable to parse email JSON: '${value}' at row ${index + 1}. Using raw value. Error: ${e.message}`);
+                    processedValue = value;
+                  }
                 } else {
-                    processedValue = String(value);  
+                  processedValue = value;
                 }
+              } else if (typeof value === 'object' && value !== null && value.text) {
+                processedValue = value.text;
+              } else if (value === null || value === undefined) {
+                processedValue = "";
+              } else {
+                processedValue = String(value);
+              }
             }
- 
-             if (formKey === 'EmailStatus') {
-                 const validStatuses = ["Extrapolated", "Unavailable", "Unknown", "Valid"]; 
-                if (typeof processedValue === 'string' && validStatuses.includes(processedValue)) {
-                 } else if (processedValue === null || processedValue === undefined || processedValue === '') {
-                    processedValue = ""; 
-                } else {
-                    console.warn(`Statut d'email invalide: '${processedValue}' à la ligne ${index + 1}. Défini comme vide.`);
-                    processedValue = ""; 
-                }
+            if (formKey === 'EmailStatus') {
+              const validStatuses = ["Extrapolated", "Unavailable", "Unknown", "Valid"];
+              if (typeof processedValue === 'string' && validStatuses.includes(processedValue)) {
+              } else if (processedValue === null || processedValue === undefined || processedValue === '') {
+                processedValue = "";
+              } else {
+                console.warn(`Invalid email status: '${processedValue}' at row ${index + 1}. Set as empty.`);
+                processedValue = "";
+              }
             }
- 
             const keys = formKey.split('.');
             let current = newClient;
             for (let i = 0; i < keys.length - 1; i++) {
-              if (current[keys[i]] === undefined || current[keys[i]] === null) { 
+              if (current[keys[i]] === undefined || current[keys[i]] === null) {
                 current[keys[i]] = {};
               }
               current = current[keys[i]];
             }
-             current[keys[keys.length - 1]] = processedValue;
+            current[keys[keys.length - 1]] = processedValue;
           });
 
-           if (!newClient.firstName || !newClient.lastName || !newClient.email || !newClient.company?.company) {
+          if (!newClient.firstName || !newClient.lastName || !newClient.email || !newClient.company?.company) {
             const missingFields = [];
             if (!newClient.firstName) missingFields.push("First Name");
             if (!newClient.lastName) missingFields.push("Last Name");
             if (!newClient.email) missingFields.push("Email");
             if (!newClient.company?.company) missingFields.push("Company Name");
-            const errorMessage = `Ligne ${index + 1}: Champs requis manquants après mapping: ${missingFields.join(', ')}. Client: ${JSON.stringify(client)}`;
+            const errorMessage = `Row ${index + 1}: Missing required fields after mapping: ${missingFields.join(', ')}. Client: ${JSON.stringify(client)}`;
             console.warn(errorMessage);
             errors.push(errorMessage);
             errorCount++;
-            continue;  
+            continue;
           }
 
-           await addClientToDatabase(newClient);
+          await addClientToDatabase(newClient);
           successCount++;
 
         } catch (error) {
-          const errorMessage = `Ligne ${index + 1}: Erreur lors du traitement ou de l'ajout: ${error.message}. Client: ${JSON.stringify(client)}`;
+          const errorMessage = `Row ${index + 1}: Error while processing or adding: ${error.message}. Client: ${JSON.stringify(client)}`;
           console.error(errorMessage, error);
           errors.push(errorMessage);
           errorCount++;
         }
       }
 
-       let summaryMessage = `Traitement terminé.
-Succès: ${successCount}
-Erreurs: ${errorCount}`;
+      let summaryMessage = `Processing finished.
+Success: ${successCount}
+Errors: ${errorCount}`;
       if (errorCount > 0) {
-          summaryMessage += `\n\nDétails des erreurs:\n${errors.slice(0, 10).join('\n')}`; 
-          if (errors.length > 10) summaryMessage += "\n(et plus...)";
-          alert("⚠️ Traitement terminé avec des erreurs. Voir la console pour les détails.");
+        summaryMessage += `\n\nError details:\n${errors.slice(0, 10).join('\n')}`;
+        if (errors.length > 10) summaryMessage += "\n(and more...)";
+        alert("⚠️ Processing finished with errors. See the console for details.");
       } else {
-          alert("✅ Traitement terminé avec succès !");
+        alert("✅ Processing finished successfully!");
       }
       console.log(summaryMessage);
 
-       setFileData([]);
+      setFileData([]);
       if (fileInputRef.current) {
         fileInputRef.current.value = null;
       }
 
     } catch (batchError) {
-      console.error("Erreur globale du traitement par lot:", batchError);
-      alert(`❌ Une erreur majeure est survenue durant le traitement: ${batchError.message}`);
+      console.error("Global batch processing error:", batchError);
+      alert(`❌ A major error occurred during processing: ${batchError.message}`);
     } finally {
       setIsProcessing(false);
     }
@@ -448,11 +440,10 @@ Erreurs: ${errorCount}`;
             onClick={handleAddFile}
             disabled={isProcessing || fileData.length === 0}
           >
-            {isProcessing ? `Traitement...` : "Traiter les données du fichier"} 
+            {isProcessing ? `Processing...`: "Process the file data"} 
           </button>
           <p style={{ color: "#8CA0B3", fontSize: "13px", marginTop: "14px" }}>
-            Formats supportés: CSV, Excel (.xlsx, .xls). Assurez-vous que les en-têtes correspondent au mapping.
-          </p>
+Supported formats: CSV, Excel (.xlsx, .xls). Make sure the headers match the mapping.          </p>
         </div>
 
          <form onSubmit={handleSubmit} style={formContainerStyle}>
@@ -542,18 +533,16 @@ Erreurs: ${errorCount}`;
 
            <h4 style={{ color: "#8CA0B3", marginTop: "20px", marginBottom: 8, fontWeight: 600 }}>Financement Compagnie</h4>
           <div style={containerStyle}>
-            {["latestFunding", "latestFundingAmount"].map((field) => (
-              <div style={inputContainerStyle} key={`companyRevenue.${field}`}>
-                <label style={labelStyle}>{formatLabel(field)}:</label>
-                <input
-                  style={inputStyle}
-                  type={field === 'latestFunding' ? 'date' : 'number'}
-                  name={`companyRevenue.${field}`}
-                  value={formData.companyRevenue[field] || ''}
-                  onChange={handleChange}
-                />
-              </div>
-            ))}
+            <div style={inputContainerStyle} key={`companyRevenue.latestFundingAmount`}>
+              <label style={labelStyle}>{formatLabel("latestFundingAmount")}:</label>
+              <input
+                style={inputStyle}
+                type="number"
+                name={`companyRevenue.latestFundingAmount`}
+                value={formData.companyRevenue["latestFundingAmount"] || ''}
+                onChange={handleChange}
+              />
+            </div>
           </div>
 
           <button type="submit" style={buttonStyle}>Ajouter le Client</button>
