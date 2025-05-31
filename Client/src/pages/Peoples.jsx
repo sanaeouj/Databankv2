@@ -87,8 +87,8 @@ const People = () => {
       >
         <Box
           sx={{
-            width: 250,
-            minWidth: 250,
+            width: 150,
+            minWidth: 150,
             maxWidth: 250,
             height: "100vh",
             bgcolor: "#20293A",
@@ -132,8 +132,7 @@ const People = () => {
             <Typography variant="h5" sx={{ color: "#fff", fontWeight: 700, mb: 0 }}>
               People List
             </Typography>
-            {/* Champ nom du filtre + bouton Save */}
-            <Box sx={{ display: "flex", gap: 1, mt: 2, mb: 2 }}>
+             <Box sx={{ display: "flex", gap: 1, mt: 2, mb: 2 }}>
               <TextField
                 size="small"
                 variant="outlined"
