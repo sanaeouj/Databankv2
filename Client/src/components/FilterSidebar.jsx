@@ -199,7 +199,7 @@ const FilterSidebar = ({ filters, setFilters, data }) => {
           alignItems: "stretch",
         }}
       >
-        <Box sx={{ py: 2, width: "100%" }}>
+        <Box sx={{ py: 0, width: "100%" }}>
           <Typography variant="h6" fontWeight={700} sx={{ color: "#fff", mb: 1, px: 2 }}>
             Filtres
           </Typography>
