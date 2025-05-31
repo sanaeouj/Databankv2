@@ -88,7 +88,6 @@ const Sidebar = () => {
             alignItems: "center",
             bgcolor: "#232E3E",
             borderRadius: 2,
-            mx: 2,
             mb: 2,
             height: 40,
             px: 2,
