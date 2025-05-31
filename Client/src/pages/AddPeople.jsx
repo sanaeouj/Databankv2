@@ -82,7 +82,7 @@ const AddPeople = () => {
 
    const inputStyle = {
     margin: "0",  
-    width: "80px",
+    width: "120px",
     height: "32px",  
     margin: "10px",
     padding: "10px",
@@ -95,6 +95,8 @@ const AddPeople = () => {
     transition: "border 0.2s",
   };
   const labelStyle = {
+        width: "120px",
+
     fontSize: "13px",
     color: "#bfc9db",
     marginBottom: "5px",
