@@ -82,9 +82,10 @@ const AddPeople = () => {
 
    const inputStyle = {
     margin: "0",  
-    width: "80%",
+    width: "80px",
     height: "32px",  
-    padding: "6px 10px",
+    marginTop: "10px",
+    padding: "10px",
     fontSize: "13px",
     borderRadius: "6px",
     border: "1px solid #293145",
