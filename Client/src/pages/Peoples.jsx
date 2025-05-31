@@ -15,8 +15,7 @@ const People = () => {
   const [loading, setLoading] = useState(true);
   const [showTable, setShowTable] = useState(Object.keys(initialFilter).length > 0);
 
-  // Ajout pour la sauvegarde des filtres
-  const [savedFilters, setSavedFilters] = useState(() => {
+   const [savedFilters, setSavedFilters] = useState(() => {
     const stored = localStorage.getItem("savedFilters");
     return stored ? JSON.parse(stored) : {};
   });
@@ -57,8 +56,7 @@ const People = () => {
     });
   };
 
-  // Fonction pour sauvegarder le filtre
-  const handleSaveFilter = () => {
+   const handleSaveFilter = () => {
     if (!filterName.trim()) return;
     const updated = { ...savedFilters, [filterName]: filters };
     setSavedFilters(updated);
@@ -69,7 +67,7 @@ const People = () => {
   const filteredData = applyFilters(data);
 
   return (
-    <Box sx={{ display: "flex", width: "90vw", height: "100vh", bgcolor: "#181F2A", m: 0, p: 0 }}>
+    <Box sx={{ display: "flex", width: "88vw", height: "100vh", bgcolor: "#181F2A", m: 0, p: 0 }}>
       <Sidebar />
       <Box
         component="main"
@@ -87,8 +85,8 @@ const People = () => {
       >
         <Box
           sx={{
-            width: 150,
-            minWidth: 150,
+            width: 250,
+            minWidth: 250,
             maxWidth: 250,
             height: "100vh",
             bgcolor: "#20293A",
@@ -173,8 +171,7 @@ const People = () => {
               ) : (
                 <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", flexGrow: 1 }}>
                   <Typography variant="body1" sx={{ color: "gray" }}>
-                    Veuillez sélectionner un filtre pour afficher le tableau.
-                  </Typography>
+Please select a filter to view the table.                  </Typography>
                 </Box>
               )}
             </Paper>
