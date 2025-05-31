@@ -75,7 +75,7 @@ const Sidebar = () => {
     >
       <Box>
         {/* Logo et titre */}
-        <Box sx={{ display: "flex", alignItems: "center", p: 2, pb: 1 }}>
+        <Box sx={{ display: "flex", alignItems: "center", pb: 1 }}>
           <img src={Icon} alt="Logo" style={{ width: 36, marginRight: 10 }} />
           <Typography variant="h6" sx={{ fontWeight: 700, letterSpacing: 0.5 }}>
             IntelligentB2B
