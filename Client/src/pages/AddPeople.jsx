@@ -81,8 +81,7 @@ const AddPeople = () => {
   const fileInputRef = useRef(null);
 
    const inputStyle = {
-    margin: "0",  
-    width: "120px",
+     width: "220px",
     height: "32px",  
     margin: "10px",
     padding: "10px",
@@ -414,7 +413,7 @@ Errors: ${errorCount}`;
   };
 
    return (
-    <div style={{ display: "flex", width: "83vw", minHeight: "100vh", background: "#181F2A" }}>
+    <div style={{ display: "flex", width: "83vw", minHeight: "100vh", background: "#181F2A",padding: "20px",margin: 10 }}>
       <Sidebar />
       <div style={{ flexGrow: 1, color: "#fff", overflowY: "auto", display: "flex", flexDirection: "column", alignItems: "center" }}>
         <h1 style={{ color: "#fff", marginBottom: "28px", fontWeight: 700, letterSpacing: 1 }}>Add People</h1>
