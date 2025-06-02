@@ -74,7 +74,7 @@ const People = () => {
         sx={{
           display: "flex",
           flexDirection: "row",
-          width: `calc(100vw - ${drawerWidth}px)`,
+          width: `100vw`,
           height: "100vh",
           bgcolor: "#181F2A",
           overflow: "hidden",
@@ -82,10 +82,8 @@ const People = () => {
           p: 0,
         }}
       >
-        {/* FilterSidebar - maintenant fixe */}
         <Box
           sx={{
-            width: 250,
             flexShrink: 0,
             height: "100vh",
             bgcolor: "#20293A",
