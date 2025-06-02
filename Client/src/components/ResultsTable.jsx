@@ -406,26 +406,28 @@ const exportToCSV = () => {
           width: "100%",
         }}
       >
-        {displayedColumns.map((col) => (
-          <TextField
-            key={col.field}
-            label={col.headerName}
-            value={filterValues[col.field] || ""}
-            onChange={(e) =>
-              setFilterValues((prev) => ({
-                ...prev,
-                [col.field]: e.target.value,
-              }))
-            }
-            variant="outlined"
-            size="small"
-            sx={{
-              flex: 1,
-              minWidth: "150px",
-            }}
-            InputProps={{ style: { color: "white" } }}
-            InputLabelProps={{ style: { color: "white" } }}
-          />
+        {displayedColumns
+          .filter((col) => col.field !== "actions") // <-- Ajoutez ce filtre
+          .map((col) => (
+            <TextField
+              key={col.field}
+              label={col.headerName}
+              value={filterValues[col.field] || ""}
+              onChange={(e) =>
+                setFilterValues((prev) => ({
+                  ...prev,
+                  [col.field]: e.target.value,
+                }))
+              }
+              variant="outlined"
+              size="small"
+              sx={{
+                flex: 1,
+                minWidth: "150px",
+              }}
+              InputProps={{ style: { color: "white" } }}
+              InputLabelProps={{ style: { color: "white" } }}
+            />
         ))}
       </Box>
       <Box

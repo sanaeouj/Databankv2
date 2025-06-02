@@ -410,7 +410,7 @@ const AddPeople = () => {
           const errorMessage = `Row ${index + 1}: Error adding to DB: ${
             error.message
           }`;
-          console.error(errorMessage);
+          // console.error(errorMessage); // <-- SUPPRIMER ou commenter cette ligne
           errors.push(errorMessage);
           currentErrorCount++;
         }
@@ -437,7 +437,7 @@ const AddPeople = () => {
         fileInputRef.current.value = null;
       }
     } catch (batchError) {
-      console.error("Global batch processing error:", batchError);
+      // console.error("Global batch processing error:", batchError); // <-- SUPPRIMER ou commenter cette ligne
       alert(
         `❌ A major error occurred during processing: ${batchError.message}`
       );
