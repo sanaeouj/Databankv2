@@ -375,7 +375,7 @@ const ResultsTable = ({ data = [], filters }) => {
             variant="contained"
             color="error"
             size="small"
-            sx={{ fontSize: "0.7rem", px: 1 }}
+            sx={{ fontSize: "14px", px: 1 }}
           >
             Delete
           </Button>
@@ -436,8 +436,8 @@ const ResultsTable = ({ data = [], filters }) => {
                 maxWidth: "180px",
                 flex: "1 1 140px",
               }}
-              InputProps={{ style: { color: "white", fontSize: "0.8rem" } }}
-              InputLabelProps={{ style: { color: "white", fontSize: "0.8rem" } }}
+              InputProps={{ style: { color: "white", fontSize: "14px" } }}
+              InputLabelProps={{ style: { color: "white", fontSize: "14px" } }}
             />
         ))}
       </Box>
@@ -471,7 +471,7 @@ const ResultsTable = ({ data = [], filters }) => {
           checkboxSelection
           disableRowSelectionOnClick
           sx={{
-            fontSize: "0.8rem",
+            fontSize: "14px",
             height: "100%",
             backgroundColor: "#20293A",
             color: "white",
@@ -479,12 +479,12 @@ const ResultsTable = ({ data = [], filters }) => {
               backgroundColor: "#1a2332",
               color: "white",
               fontWeight: "bold",
-              fontSize: "0.8rem"
+              fontSize: "14px"
             },
             "& .MuiDataGrid-row": {
               backgroundColor: "#20293A",
               color: "white",
-              fontSize: "0.8rem"
+              fontSize: "14px"
             },
             "& .MuiDataGrid-row:hover": {
               backgroundColor: "#2a3441",
@@ -498,7 +498,7 @@ const ResultsTable = ({ data = [], filters }) => {
               backgroundColor: "#20293A",
               color: "white",
               padding: "4px 8px",
-              fontSize: "0.8rem"
+              fontSize: "14px"
             },
             "& .MuiCheckbox-root": {
               color: "#6366F1",
