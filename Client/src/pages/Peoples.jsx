@@ -84,6 +84,7 @@ const People = () => {
       >
         <Box
           sx={{
+            width: 200,
             flexShrink: 0,
             height: "100vh",
             bgcolor: "#20293A",
@@ -112,7 +113,6 @@ const People = () => {
           )}
         </Box>
 
-        {/* Contenu principal */}
         <Box
           sx={{
             flexGrow: 1,
