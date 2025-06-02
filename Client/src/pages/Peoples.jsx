@@ -108,7 +108,7 @@ const People = () => {
         )}
       </Box>
 
-      {/* Main Content - Collé directement au FilterSidebar */}
+      {/* Main Content - Décalé pour éviter le chevauchement */}
       <Box
         component="main"
         sx={{
@@ -157,7 +157,7 @@ const People = () => {
           </Box>
         </Box>
 
-        {/* Table Section - Collée directement sous le header */}
+        {/* Table Section */}
         <Box sx={{ 
           flexGrow: 1, 
           px: 4, 
