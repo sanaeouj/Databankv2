@@ -78,6 +78,8 @@ const AddPeople = () => {
 
   const [fileData, setFileData] = useState([]);
   const [isProcessing, setIsProcessing] = useState(false);
+  const [successCount, setSuccessCount] = useState(0); // Added state for counts
+  const [errorCount, setErrorCount] = useState(0); // Added state for counts
   const fileInputRef = useRef(null);
 
    const inputStyle = {
@@ -153,13 +155,22 @@ const AddPeople = () => {
         body: JSON.stringify(client),
       });
       if (!response.ok) {
-        const errorText = await response.text();
-        throw new Error(errorText || "Failed to add client");
+        let errorDetails = "Failed to add client";
+        try {
+          const errorJson = await response.json();
+          errorDetails = JSON.stringify(errorJson);
+        } catch (jsonError) {
+          errorDetails = await response.text();
+        }
+        // Include client data in the error for better debugging
+        throw new Error(`${errorDetails || "Failed to add client"}. Client data: ${JSON.stringify(client)}`);
       }
       return await response.json();
     } catch (error) {
-      console.error("Error adding client:", error);
-      throw error;
+      console.error("Error adding client:", error); // Log the full error object
+      // Ensure the error thrown includes the detailed message and potentially client data if not already included
+      const message = error.message.includes('Client data:') ? error.message : `Error adding client: ${error.message}`;
+      throw new Error(message);
     }
   };
 
@@ -168,6 +179,9 @@ const AddPeople = () => {
     if (!file) return;
 
     const fileExtension = file.name.split(".").pop().toLowerCase();
+    setFileData([]); // Reset data on new file selection
+    setSuccessCount(0);
+    setErrorCount(0);
 
     try {
       if (fileExtension === "csv") {
@@ -208,11 +222,19 @@ const AddPeople = () => {
             const header = headers[colNumber - 1];
             if (header) { 
                  let cellValue = cell.value;
-                if (typeof cellValue === 'object' && cellValue !== null && cellValue.text) {
-                    cellValue = cellValue.text;  
+                if (typeof cellValue === 'object' && cellValue !== null) {
+                    if (cellValue.text) {
+                        cellValue = cellValue.text;
+                    } else if (cellValue.result) {
+                        cellValue = cellValue.result;
+                    } else if (cellValue instanceof Date) {
+                        cellValue = cellValue.toISOString();
+                    } else {
+                        cellValue = JSON.stringify(cellValue); 
+                    }
                 }
-                rowData[header] = cellValue;
-                if (cellValue !== null && cellValue !== '') {
+                rowData[header] = (cellValue !== null && cellValue !== undefined) ? String(cellValue) : '';
+                if (rowData[header] !== '') {
                     hasValue = true;
                 }
             }
@@ -239,14 +261,16 @@ const AddPeople = () => {
     }
 
     setIsProcessing(true);
-    let successCount = 0;
-    let errorCount = 0;
+    let currentSuccessCount = 0;
+    let currentErrorCount = 0;
     const errors = [];
+    setSuccessCount(0); // Reset counts at start of processing
+    setErrorCount(0);
 
     try {
       for (const [index, client] of fileData.entries()) {
-        if (!client || Object.keys(client).length === 0 || Object.values(client).every(v => v === null || v === '')) {
-          console.warn(`Skipping empty row ${index + 1}`);
+        if (!client || Object.keys(client).length === 0 || Object.values(client).every(v => v === null || v === '' || v === undefined)) {
+          console.warn(`Skipping empty or invalid row ${index + 1}`);
           continue;
         }
 
@@ -265,39 +289,21 @@ const AddPeople = () => {
             if (!formKey) {
               return;
             }
-            let processedValue = value;
+            
+            let processedValue = (value !== null && value !== undefined) ? String(value).trim() : "";
+
             if ((formKey === 'email' || formKey === 'company.email')) {
-              if (typeof value === 'string') {
-                if (value.trim().startsWith('{') && value.trim().endsWith('}')) {
-                  try {
-                    const jsonString = value.replace(/""/g, '"');
-                    const emailObj = JSON.parse(jsonString);
-                    processedValue = emailObj.text || '';
-                  } catch (e) {
-                    console.warn(`Unable to parse email JSON: '${value}' at row ${index + 1}. Using raw value. Error: ${e.message}`);
-                    processedValue = value;
-                  }
-                } else {
-                  processedValue = value;
+              if (processedValue.startsWith('{') && processedValue.endsWith('}')) {
+                try {
+                  const emailObj = JSON.parse(processedValue.replace(/""/g, '"'));
+                  processedValue = (emailObj.text || '').trim();
+                } catch (e) {
+                  console.warn(`Row ${index + 1}: Unable to parse email JSON: '${value}'. Using raw value. Error: ${e.message}`);
                 }
-              } else if (typeof value === 'object' && value !== null && value.text) {
-                processedValue = value.text;
-              } else if (value === null || value === undefined) {
-                processedValue = "";
-              } else {
-                processedValue = String(value);
               }
             }
-            if (formKey === 'EmailStatus') {
-              const validStatuses = ["Extrapolated", "Unavailable", "Unknown", "Valid"];
-              if (typeof processedValue === 'string' && validStatuses.includes(processedValue)) {
-              } else if (processedValue === null || processedValue === undefined || processedValue === '') {
-                processedValue = "";
-              } else {
-                console.warn(`Invalid email status: '${processedValue}' at row ${index + 1}. Set as empty.`);
-                processedValue = "";
-              }
-            }
+            
+            // Assign processed value (EmailStatus will be handled later)
             const keys = formKey.split('.');
             let current = newClient;
             for (let i = 0; i < keys.length - 1; i++) {
@@ -309,41 +315,56 @@ const AddPeople = () => {
             current[keys[keys.length - 1]] = processedValue;
           });
 
-          if (!newClient.firstName || !newClient.lastName || !newClient.email || !newClient.company?.company) {
-            const missingFields = [];
-            if (!newClient.firstName) missingFields.push("First Name");
-            if (!newClient.lastName) missingFields.push("Last Name");
-            if (!newClient.email) missingFields.push("Email");
-            if (!newClient.company?.company) missingFields.push("Company Name");
-            const errorMessage = `Row ${index + 1}: Missing required fields after mapping: ${missingFields.join(', ')}. Client: ${JSON.stringify(client)}`;
-            console.warn(errorMessage);
-            errors.push(errorMessage);
-            errorCount++;
-            continue;
+          // *** START: Logic for EmailStatus based on Email presence ***
+          const validStatuses = ["Extrapolated", "Unavailable", "Unknown", "Valid"];
+          
+          if (!newClient.email) {
+            // If email is missing, force EmailStatus to "Extrapolated"
+            newClient.EmailStatus = "Extrapolated";
+          } else {
+            // If email is present, validate the mapped EmailStatus or set to empty if invalid
+            const currentStatus = newClient.EmailStatus; // Get the status mapped from the file
+            if (currentStatus && validStatuses.includes(currentStatus)) {
+              // Status from file is valid, keep it
+            } else {
+              if (currentStatus) { // Log only if there was an invalid value initially
+                 console.warn(`Row ${index + 1}: Invalid email status: '${currentStatus}' with present email. Setting to empty.`);
+              }
+              newClient.EmailStatus = ""; // Set to empty if invalid or missing from file
+            }
           }
+          // *** END: Logic for EmailStatus ***
+
+          // *** REMOVED: Validation block that skipped rows ***
+          // Now we attempt to add every row, regardless of missing fields (except completely empty rows handled at the start)
 
           await addClientToDatabase(newClient);
-          successCount++;
+          currentSuccessCount++;
 
         } catch (error) {
-          const errorMessage = `Row ${index + 1}: Error while processing or adding: ${error.message}. Client: ${JSON.stringify(client)}`;
-          console.error(errorMessage, error);
+          // Catch errors from addClientToDatabase
+          const errorMessage = `Row ${index + 1}: Error adding to DB: ${error.message}`; // Error message now includes client data from addClientToDatabase
+          console.error(errorMessage); 
           errors.push(errorMessage);
-          errorCount++;
+          currentErrorCount++;
         }
+        // Update state progressively for UI feedback (optional, but good UX)
+        setSuccessCount(currentSuccessCount);
+        setErrorCount(currentErrorCount);
       }
 
+      // Final Reporting results
       let summaryMessage = `Processing finished.
-Success: ${successCount}
-Errors: ${errorCount}`;
-      if (errorCount > 0) {
-        summaryMessage += `\n\nError details:\n${errors.slice(0, 10).join('\n')}`;
-        if (errors.length > 10) summaryMessage += "\n(and more...)";
-        alert("⚠️ Processing finished with errors. See the console for details.");
+Success: ${currentSuccessCount}
+Errors: ${currentErrorCount}`;
+      if (currentErrorCount > 0) {
+        summaryMessage += `\n\nError details (first 10):\n${errors.slice(0, 10).join('\n')}`;
+        if (errors.length > 10) summaryMessage += "\n(See console for all errors)";
+        alert("⚠️ Processing finished with errors. Check the console for details. Some rows might have been rejected by the server due to missing required data.");
       } else {
         alert("✅ Processing finished successfully!");
       }
-      console.log(summaryMessage);
+      console.log(summaryMessage); 
 
       setFileData([]);
       if (fileInputRef.current) {
@@ -381,8 +402,17 @@ Errors: ${errorCount}`;
    const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+       // Keep validation for manual submission, but maybe relax email requirement based on user feedback?
+       // For now, keeping it strict for manual entry as it's less prone to bulk errors.
        if (!formData.firstName || !formData.lastName || !formData.email || !formData.company?.company || !formData.EmailStatus) {
          throw new Error("Veuillez remplir tous les champs requis (*), y compris le statut de l'e-mail.");
+      }
+      if (!/\S+@\S+\.\S+/.test(formData.email)) {
+          throw new Error("Le format de l'adresse e-mail est invalide.");
+      }
+      const validStatuses = ["Extrapolated", "Unavailable", "Unknown", "Valid"];
+      if (!validStatuses.includes(formData.EmailStatus)){
+          throw new Error("Veuillez sélectionner un statut d'e-mail valide.");
       }
 
       console.log("Envoi du formulaire manuel:", formData);
@@ -398,7 +428,7 @@ Errors: ${errorCount}`;
 
     } catch (error) {
       console.error("Erreur lors de la soumission manuelle:", error);
-      alert(`❌ Erreur: ${error.message}`);
+      alert(`❌ Erreur: ${error.message}`); 
     }
   };
 
@@ -408,16 +438,17 @@ Errors: ${errorCount}`;
       .replace(/([A-Z])/g, " $1") 
       .replace(/_/g, " ")   
       .replace(/\./g, " > ")  
-      .toLowerCase()  
-      .replace(/(^|\s)\w/g, (c) => c.toUpperCase());  
+      .trim()
+      .replace(/^\w|\s\w/g, (c) => c.toUpperCase());
   };
 
    return (
-    <div style={{ display: "flex", width: "83vw", minHeight: "100vh", background: "#181F2A",padding: "20px",margin: 10 }}>
+    <div style={{ display: "flex", width: "100%", minHeight: "100vh", background: "#181F2A", padding: "20px", boxSizing: 'border-box' }}>
       <Sidebar />
-      <div style={{ flexGrow: 1, color: "#fff", overflowY: "auto", display: "flex", flexDirection: "column", alignItems: "center" }}>
+      <div style={{ flexGrow: 1, color: "#fff", overflowY: "auto", display: "flex", flexDirection: "column", alignItems: "center", paddingLeft: '20px' }}> 
         <h1 style={{ color: "#fff", marginBottom: "28px", fontWeight: 700, letterSpacing: 1 }}>Add People</h1>
 
+         {/* Import Section */}
          <div style={formContainerStyle}>
           <h3 style={{ color: "#fff", marginBottom: 16 }}>Import Clients from File</h3>
           <input
@@ -425,7 +456,10 @@ Errors: ${errorCount}`;
             accept=".csv,.xlsx,.xls"
             onChange={handleFileChange}
             style={{
-              fontSize: "16px",
+              display: 'block',
+              width: '100%',
+              boxSizing: 'border-box',
+              fontSize: "14px",
               margin: "10px 0 18px 0",
               color: "#fff",
               background: "#232B3B",
@@ -442,16 +476,26 @@ Errors: ${errorCount}`;
             onClick={handleAddFile}
             disabled={isProcessing || fileData.length === 0}
           >
-            {isProcessing ? `Processing...`: "Process the file data"} 
+            {/* Updated button text to show progress */}
+            {isProcessing ? `Processing... (${successCount + errorCount}/${fileData.length})` : "Process File Data"} 
           </button>
+          {/* Display counts during/after processing */}
+          {(isProcessing || successCount > 0 || errorCount > 0) && (
+            <p style={{ color: "#8CA0B3", fontSize: "13px", marginTop: "14px" }}>
+              Processed: {successCount + errorCount} / {fileData.length} | Success: {successCount} | Errors: {errorCount}
+            </p>
+          )}
           <p style={{ color: "#8CA0B3", fontSize: "13px", marginTop: "14px" }}>
-Supported formats: CSV, Excel (.xlsx, .xls). Make sure the headers match the mapping.          </p>
+            Supported formats: CSV, Excel (.xlsx, .xls). All rows will be attempted. Email Status set to 'Extrapolated' if Email is missing.
+          </p>
         </div>
 
+         {/* Manual Add Section */}
          <form onSubmit={handleSubmit} style={formContainerStyle}>
-          <h3 style={{ color: "#fff", marginBottom: 16 }}>Ajouter manuellement</h3>
+          <h3 style={{ color: "#fff", marginBottom: 16 }}>Add Manually</h3>
           
-           <h4 style={{ color: "#8CA0B3", marginTop: "20px", marginBottom: 8, fontWeight: 600 }}>Informations Personnelles</h4>
+           {/* Personal Info */}
+           <h4 style={{ color: "#8CA0B3", marginTop: "20px", marginBottom: 8, fontWeight: 600 }}>Personal Information</h4>
           <div style={containerStyle}>
              {["firstName", "lastName", "title", "seniority", "departments", "mobilePhone", "email"].map((field) => (
               <div style={inputContainerStyle} key={field}>
@@ -460,94 +504,99 @@ Supported formats: CSV, Excel (.xlsx, .xls). Make sure the headers match the map
                   style={inputStyle}
                   type={field === "email" ? "email" : "text"}
                   name={field}
-                  value={formData[field] || ''}  
+                  value={formData[field] || ''}
                   onChange={handleChange}
                   required={["firstName", "lastName", "email"].includes(field)}
                 />
               </div>
             ))}
-            <div style={inputContainerStyle}>
-              <label style={labelStyle}>{formatLabel('EmailStatus')}*:</label>
-              <select
-                style={{ ...inputStyle, appearance: "auto", lineHeight: "normal", paddingRight: 24 }}
-                name="EmailStatus"
-                value={formData.EmailStatus || ''}
-                onChange={handleChange}
-                required
-              >
-                <option value="">-- Sélectionner Statut --</option>
-                <option value="Valid">Valid</option>
-                <option value="Extrapolated">Extrapolated</option>
-                <option value="Unavailable">Unavailable</option>
-                <option value="Unknown">Unknown</option>
-              </select>
-            </div>
+             {/* Email Status Dropdown */}
+             <div style={inputContainerStyle}>
+                 <label style={labelStyle}>{formatLabel('EmailStatus')}*:</label>
+                 <select 
+                    style={inputStyle} 
+                    name="EmailStatus" 
+                    value={formData.EmailStatus || ''} 
+                    onChange={handleChange}
+                    required
+                 >
+                     <option value="" disabled>Select Status</option>
+                     <option value="Extrapolated">Extrapolated</option>
+                     <option value="Unavailable">Unavailable</option>
+                     <option value="Unknown">Unknown</option>
+                     <option value="Valid">Valid</option>
+                 </select>
+             </div>
           </div>
 
-           <h4 style={{ color: "#8CA0B3", marginTop: "20px", marginBottom: 8, fontWeight: 600 }}>Informations Compagnie</h4>
+          {/* Company Info */}
+          <h4 style={{ color: "#8CA0B3", marginTop: "20px", marginBottom: 8, fontWeight: 600 }}>Company Information</h4>
           <div style={containerStyle}>
-             {["company", "email", "phone", "employees", "industry", "seoDescription"].map((field) => (
-              <div style={inputContainerStyle} key={`company.${field}`}>
-                <label style={labelStyle}>{formatLabel(`company.${field}`)}{field === 'company' ? '*' : ''}:</label>
+             {["company.company", "company.email", "company.phone", "company.employees", "company.industry", "company.seoDescription"].map((field) => (
+              <div style={inputContainerStyle} key={field}>
+                <label style={labelStyle}>{formatLabel(field)}{field === "company.company" ? '*' : ''}:</label>
                 <input
                   style={inputStyle}
-                  type={field === "email" ? "email" : "text"}
-                  name={`company.${field}`}
-                  value={formData.company[field] || ''}  
+                  type={field.includes("email") ? "email" : field.includes("phone") ? "tel" : "text"}
+                  name={field}
+                  value={field.split('.').reduce((o, k) => o?.[k], formData) || ''}
                   onChange={handleChange}
-                  required={field === 'company'}  
+                  required={field === "company.company"}
                 />
               </div>
             ))}
           </div>
 
-           <h4 style={{ color: "#8CA0B3", marginTop: "20px", marginBottom: 8, fontWeight: 600 }}>Informations Géographiques</h4>
+          {/* Geo Info */}
+          <h4 style={{ color: "#8CA0B3", marginTop: "20px", marginBottom: 8, fontWeight: 600 }}>Location</h4>
           <div style={containerStyle}>
-            {["address", "city", "state", "country"].map((field) => (
-              <div style={inputContainerStyle} key={`geo.${field}`}>
-                <label style={labelStyle}>{formatLabel(`geo.${field}`)}:</label>
+             {["geo.address", "geo.city", "geo.state", "geo.country"].map((field) => (
+              <div style={inputContainerStyle} key={field}>
+                <label style={labelStyle}>{formatLabel(field)}:</label>
                 <input
                   style={inputStyle}
                   type="text"
-                  name={`geo.${field}`}
-                  value={formData.geo[field] || ''}
+                  name={field}
+                  value={field.split('.').reduce((o, k) => o?.[k], formData) || ''}
                   onChange={handleChange}
                 />
               </div>
             ))}
           </div>
 
-           <h4 style={{ color: "#8CA0B3", marginTop: "20px", marginBottom: 8, fontWeight: 600 }}>Réseaux Sociaux</h4>
+          {/* Social Info */}
+          <h4 style={{ color: "#8CA0B3", marginTop: "20px", marginBottom: 8, fontWeight: 600 }}>Social Media</h4>
           <div style={containerStyle}>
-            {["linkedinUrl", "facebookUrl", "twitterUrl"].map((field) => (
-              <div style={inputContainerStyle} key={`social.${field}`}>
+             {["social.linkedinUrl", "social.facebookUrl", "social.twitterUrl"].map((field) => (
+              <div style={inputContainerStyle} key={field}>
                 <label style={labelStyle}>{formatLabel(field)}:</label>
                 <input
                   style={inputStyle}
                   type="url"
-                  name={`social.${field}`}
-                  value={formData.social[field] || ''}
+                  name={field}
+                  value={field.split('.').reduce((o, k) => o?.[k], formData) || ''}
                   onChange={handleChange}
                 />
               </div>
             ))}
           </div>
 
-           <h4 style={{ color: "#8CA0B3", marginTop: "20px", marginBottom: 8, fontWeight: 600 }}>Financement Compagnie</h4>
-          <div style={containerStyle}>
-            <div style={inputContainerStyle} key={`companyRevenue.latestFundingAmount`}>
-              <label style={labelStyle}>{formatLabel("latestFundingAmount")}:</label>
-              <input
-                style={inputStyle}
-                type="number"
-                name={`companyRevenue.latestFundingAmount`}
-                value={formData.companyRevenue["latestFundingAmount"] || ''}
-                onChange={handleChange}
-              />
-            </div>
-          </div>
+          {/* Revenue Info */}
+          <h4 style={{ color: "#8CA0B3", marginTop: "20px", marginBottom: 8, fontWeight: 600 }}>Funding (Optional)</h4>
+           <div style={containerStyle}>
+              <div style={inputContainerStyle}>
+                 <label style={labelStyle}>{formatLabel('companyRevenue.latestFundingAmount')}:</label>
+                 <input
+                   style={inputStyle}
+                   type="text"
+                   name="companyRevenue.latestFundingAmount"
+                   value={formData.companyRevenue?.latestFundingAmount || ''}
+                   onChange={handleChange}
+                 />
+              </div>
+           </div>
 
-          <button type="submit" style={buttonStyle}>Ajouter le Client</button>
+          <button type="submit" style={buttonStyle}>Add Client Manually</button>
         </form>
       </div>
     </div>
@@ -555,3 +604,4 @@ Supported formats: CSV, Excel (.xlsx, .xls). Make sure the headers match the map
 };
 
 export default AddPeople;
+
