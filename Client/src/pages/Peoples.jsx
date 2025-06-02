@@ -15,7 +15,7 @@ const People = () => {
   const [loading, setLoading] = useState(true);
   const [showTable, setShowTable] = useState(Object.keys(initialFilter).length > 0);
 
-   const [savedFilters, setSavedFilters] = useState(() => {
+  const [savedFilters, setSavedFilters] = useState(() => {
     const stored = localStorage.getItem("savedFilters");
     return stored ? JSON.parse(stored) : {};
   });
@@ -56,7 +56,7 @@ const People = () => {
     });
   };
 
-   const handleSaveFilter = () => {
+  const handleSaveFilter = () => {
     if (!filterName.trim()) return;
     const updated = { ...savedFilters, [filterName]: filters };
     setSavedFilters(updated);
@@ -67,114 +67,128 @@ const People = () => {
   const filteredData = applyFilters(data);
 
   return (
-    <Box sx={{ display: "flex", width: "83vw", height: "100vh", bgcolor: "#181F2A", m: 0, p: 0 }}>
+    <Box sx={{ 
+      display: "flex", 
+      width: "100vw", 
+      height: "100vh", 
+      bgcolor: "#181F2A", 
+      overflow: "hidden"
+    }}>
       <Sidebar />
+      
+      {/* FilterSidebar - Position fixe */}
+      <Box
+        sx={{
+          position: "fixed",
+          left: `${drawerWidth}px`,
+          top: 0,
+          width: 270,
+          height: "100vh",
+          bgcolor: "#20293A",
+          borderRight: "1px solid #232B3B",
+          zIndex: 1000,
+          overflow: "hidden"
+        }}
+      >
+        {loading ? (
+          <Paper sx={{ bgcolor: "#20293A", p: 2, boxShadow: "none" }}>
+            <Typography variant="h6" sx={{ color: "#fff" }}>
+              Chargement des filtres...
+            </Typography>
+          </Paper>
+        ) : (
+          <FilterSidebar
+            filters={filters}
+            setFilters={(newFilters) => {
+              setFilters(newFilters);
+              setShowTable(true);
+            }}
+            data={data}
+          />
+        )}
+      </Box>
+
+      {/* Main Content - Décalé pour éviter le chevauchement */}
       <Box
         component="main"
         sx={{
-          width: `calc(100vw - ${drawerWidth}px)`,
+          marginLeft: `${drawerWidth + 270}px`, // Sidebar + FilterSidebar width
+          width: `calc(100vw - ${drawerWidth + 270}px)`,
           minHeight: "100vh",
           bgcolor: "#181F2A",
           display: "flex",
-          flexDirection: "row",
-          alignItems: "stretch",
-          overflow: "hidden",
-          m: 0,  
-          p: 0, 
+          flexDirection: "column",
+          overflow: "hidden"
         }}
       >
-        <Box
-          sx={{
-            width: 270,
-       
-            height: "100vh",
-            bgcolor: "#20293A",
-            borderRight: "1px solid #232B3B",
-            p: 0,
-            m: 0,  
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "flex-start",
-          }}
-        >
-          {loading ? (
-            <Paper sx={{ bgcolor: "#20293A", p: 2, boxShadow: "none" }}>
-              <Typography variant="h6" sx={{ color: "#fff" }}>
-                Chargement des filtres...
-              </Typography>
-            </Paper>
-          ) : (
-            <FilterSidebar
-              filters={filters}
-              setFilters={(newFilters) => {
-                setFilters(newFilters);
-                setShowTable(true);
+        {/* Header Section */}
+        <Box sx={{ px: 4, pt: 4, pb: 2, flexShrink: 0 }}>
+          <Typography variant="h5" sx={{ color: "#fff", fontWeight: 700, mb: 2 }}>
+            People List
+          </Typography>
+          <Box sx={{ display: "flex", gap: 1, mb: 2 }}>
+            <TextField
+              size="small"
+              variant="outlined"
+              placeholder="Enter filter name"
+              value={filterName}
+              onChange={(e) => setFilterName(e.target.value)}
+              sx={{
+                bgcolor: "#20293A",
+                input: { color: "#fff" },
+                "& .MuiOutlinedInput-notchedOutline": { borderColor: "#293145" },
+                width: 180,
               }}
-              data={data}
             />
-          )}
+            <Button
+              variant="contained"
+              onClick={handleSaveFilter}
+              sx={{
+                bgcolor: "#6366F1",
+                color: "#fff",
+                fontWeight: 600,
+                fontSize: "0.9rem",
+                px: 2,
+                "&:hover": { bgcolor: "#4ADE80", color: "#181F2A" },
+              }}
+            >
+              Save
+            </Button>
+          </Box>
         </Box>
-         <Box
-          sx={{
-            flexGrow: 1,
-            p: 0,
-            height: "100vh",
-            overflow: "auto",
-            display: "flex",
+
+        {/* Table Section */}
+        <Box sx={{ 
+          flexGrow: 1, 
+          px: 4, 
+          pb: 4, 
+          display: "flex", 
+          flexDirection: "column",
+          overflow: "hidden"
+        }}>
+          <Paper sx={{ 
+            bgcolor: "#20293A", 
+            borderRadius: 3, 
+            boxShadow: "none", 
+            flexGrow: 1, 
+            display: "flex", 
             flexDirection: "column",
-            bgcolor: "#181F2A",
-          }}
-        >
-          <Box sx={{ px: 4, pt: 4, pb: 2 }}>
-            <Typography variant="h5" sx={{ color: "#fff", fontWeight: 700, mb: 0 }}>
-              People List
-            </Typography>
-             <Box sx={{ display: "flex", gap: 1, mt: 2, mb: 2 }}>
-              <TextField
-                size="small"
-                variant="outlined"
-                placeholder="Enter filter name"
-                value={filterName}
-                onChange={(e) => setFilterName(e.target.value)}
-                sx={{
-                  bgcolor: "#20293A",
-                  input: { color: "#fff" },
-                  "& .MuiOutlinedInput-notchedOutline": { borderColor: "#293145" },
-                  width: 180,
-                }}
-              />
-              <Button
-                variant="contained"
-                onClick={handleSaveFilter}
-                sx={{
-                  bgcolor: "#6366F1",
-                  color: "#fff",
-                  fontWeight: 600,
-                  fontSize: "0.9rem",
-                  px: 2,
-                  "&:hover": { bgcolor: "#4ADE80", color: "#181F2A" },
-                }}
-              >
-                Save
-              </Button>
-            </Box>
-          </Box>
-          <Box sx={{ flexGrow: 1, px: 4, pb: 4, display: "flex", flexDirection: "column" }}>
-            <Paper sx={{ bgcolor: "#20293A", p: 0, borderRadius: 3, minHeight: 400, boxShadow: "none", flexGrow: 1, display: "flex", flexDirection: "column" }}>
-              {loading ? (
-                <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", flexGrow: 1 }}>
-                  <CircularProgress />
-                </Box>
-              ) : showTable && filteredData.length > 0 ? (
-                <ResultsTable data={filteredData} filters={filters} />
-              ) : (
-                <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", flexGrow: 1 }}>
-                  <Typography variant="body1" sx={{ color: "gray" }}>
-Please select a filter to view the table.                  </Typography>
-                </Box>
-              )}
-            </Paper>
-          </Box>
+            overflow: "hidden"
+          }}>
+            {loading ? (
+              <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", flexGrow: 1 }}>
+                <CircularProgress />
+              </Box>
+            ) : showTable && filteredData.length > 0 ? (
+              <ResultsTable data={filteredData} filters={filters} />
+            ) : (
+              <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", flexGrow: 1 }}>
+                <Typography variant="body1" sx={{ color: "gray" }}>
+                  Please select a filter to view the table.
+                </Typography>
+              </Box>
+            )}
+          </Paper>
         </Box>
       </Box>
     </Box>

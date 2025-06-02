@@ -410,8 +410,7 @@ const AddPeople = () => {
           const errorMessage = `Row ${index + 1}: Error adding to DB: ${
             error.message
           }`;
-          // console.error(errorMessage); // <-- SUPPRIMER ou commenter cette ligne
-          errors.push(errorMessage);
+           errors.push(errorMessage);
           currentErrorCount++;
         }
         setSuccessCount(currentSuccessCount);
