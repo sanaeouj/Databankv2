@@ -108,6 +108,8 @@ const AddPeople = () => {
     gridTemplateColumns: "1fr 1fr 1fr",
     gap: "18px",
     alignItems: "center",
+    maxWidth: "100%",  
+    boxSizing: "border-box",  
   };
   const inputContainerStyle = {
     display: "flex",
@@ -144,6 +146,8 @@ const AddPeople = () => {
     maxWidth: "1100px",
     width: "100%",
     border: "1px solid #293145",
+    boxSizing: "border-box",
+    overflowX: "auto", // Ajouté pour éviter le débordement
   };
 
   const addClientToDatabase = async (client) => {
@@ -540,6 +544,7 @@ const AddPeople = () => {
         background: "#181F2A",
         padding: "20px",
         boxSizing: "border-box",
+        overflowX: "hidden", // Ajouté pour éviter le scroll horizontal
       }}
     >
       <Sidebar />
@@ -548,10 +553,13 @@ const AddPeople = () => {
           flexGrow: 1,
           color: "#fff",
           overflowY: "auto",
+          overflowX: "hidden", // Ajouté
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
           paddingLeft: "20px",
+          width: "100%", // Ajouté
+          boxSizing: "border-box", // Ajouté
         }}
       >
         <h1
