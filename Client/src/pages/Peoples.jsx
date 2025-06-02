@@ -84,7 +84,7 @@ const People = () => {
       >
         <Box
           sx={{
-            width: 200,
+            width: 250,
             flexShrink: 0,
             height: "100vh",
             bgcolor: "#20293A",
