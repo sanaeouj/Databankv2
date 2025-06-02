@@ -471,10 +471,10 @@ const AddPeople = () => {
           "Veuillez remplir tous les champs requis (*), y compris le statut de l'e-mail."
         );
       }
-      if (!/\S+@\S+\.\S+/.test(formData.email)) {
+      if (formData.email && !/\S+@\S+\.\S+/.test(formData.email)) {
         throw new Error("Le format de l'adresse e-mail est invalide.");
       }
-      const validStatuses = ["Extrapolated", "Unavailable", "Unknown", "Valid"];
+      const validStatuses = ["", "Extrapolated", "Unavailable", "Unknown", "Valid", "Verified"];
       if (!validStatuses.includes(formData.EmailStatus)) {
         throw new Error("Veuillez sélectionner un statut d'e-mail valide.");
       }
