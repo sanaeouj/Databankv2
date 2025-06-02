@@ -403,7 +403,6 @@ const exportToCSV = () => {
           flexWrap: "nowrap",  
           gap: 2,
           padding: 2,
-          overflowX: "auto",  
           width: "100%",
         }}
       >
@@ -457,7 +456,6 @@ const exportToCSV = () => {
         sx={{
           fontSize: "20px",
           height: "100%",
-          overflowX: "auto",
           backgroundColor: "#20293A",
           color: "white",
           width: `${Math.max(
