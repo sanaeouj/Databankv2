@@ -417,7 +417,7 @@ const ResultsTable = ({ data = [], filters }) => {
       >
         {displayedColumns
           .filter((col) => col.field !== "actions")
-          .slice(0, 6) // Limiter à 6 champs de recherche visibles
+          .slice(0, 6) 
           .map((col) => (
             <TextField
               key={col.field}
@@ -435,6 +435,7 @@ const ResultsTable = ({ data = [], filters }) => {
                 minWidth: "140px",
                 maxWidth: "180px",
                 flex: "1 1 140px",
+                fontSize: "14px", 
               }}
               InputProps={{ style: { color: "white", fontSize: "14px" } }}
               InputLabelProps={{ style: { color: "white", fontSize: "14px" } }}

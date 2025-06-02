@@ -114,19 +114,19 @@ const People = () => {
         sx={{
           marginLeft: `${drawerWidth + 270}px`, // Sidebar + FilterSidebar width
           width: `calc(100vw - ${drawerWidth + 270}px)`,
-          minHeight: "100vh",
+          height: "100vh", // Changé de minHeight à height
           bgcolor: "#181F2A",
           display: "flex",
           flexDirection: "column",
           overflow: "hidden"
         }}
       >
-        {/* Header Section */}
-        <Box sx={{ px: 4, pt: 4, pb: 2, flexShrink: 0 }}>
-          <Typography variant="h5" sx={{ color: "#fff", fontWeight: 700, mb: 2 }}>
+        {/* Header Section - Réduit le padding */}
+        <Box sx={{ px: 2, pt: 2, pb: 1, flexShrink: 0 }}>
+          <Typography variant="h5" sx={{ color: "#fff", fontWeight: 700, mb: 1 }}>
             People List
           </Typography>
-          <Box sx={{ display: "flex", gap: 1, mb: 2 }}>
+          <Box sx={{ display: "flex", gap: 1, mb: 1 }}>
             <TextField
               size="small"
               variant="outlined"
@@ -138,7 +138,10 @@ const People = () => {
                 input: { color: "#fff" },
                 "& .MuiOutlinedInput-notchedOutline": { borderColor: "#293145" },
                 width: 180,
+                fontSize: "14px"
               }}
+              InputProps={{ style: { color: "#fff", fontSize: "14px" } }}
+              InputLabelProps={{ style: { color: "#fff", fontSize: "14px" } }}
             />
             <Button
               variant="contained"
@@ -147,7 +150,7 @@ const People = () => {
                 bgcolor: "#6366F1",
                 color: "#fff",
                 fontWeight: 600,
-                fontSize: "0.9rem",
+                fontSize: "14px",
                 px: 2,
                 "&:hover": { bgcolor: "#4ADE80", color: "#181F2A" },
               }}
@@ -157,38 +160,26 @@ const People = () => {
           </Box>
         </Box>
 
-        {/* Table Section */}
+        {/* Table Section - Supprimez le padding inutile */}
         <Box sx={{ 
           flexGrow: 1, 
-          px: 4, 
-          pb: 4, 
           display: "flex", 
           flexDirection: "column",
           overflow: "hidden"
         }}>
-          <Paper sx={{ 
-            bgcolor: "#20293A", 
-            borderRadius: 3, 
-            boxShadow: "none", 
-            flexGrow: 1, 
-            display: "flex", 
-            flexDirection: "column",
-            overflow: "hidden"
-          }}>
-            {loading ? (
-              <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", flexGrow: 1 }}>
-                <CircularProgress />
-              </Box>
-            ) : showTable && filteredData.length > 0 ? (
-              <ResultsTable data={filteredData} filters={filters} />
-            ) : (
-              <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", flexGrow: 1 }}>
-                <Typography variant="body1" sx={{ color: "gray" }}>
-                  Please select a filter to view the table.
-                </Typography>
-              </Box>
-            )}
-          </Paper>
+          {loading ? (
+            <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", flexGrow: 1 }}>
+              <CircularProgress />
+            </Box>
+          ) : showTable && filteredData.length > 0 ? (
+            <ResultsTable data={filteredData} filters={filters} />
+          ) : (
+            <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", flexGrow: 1 }}>
+              <Typography variant="body1" sx={{ color: "gray" }}>
+                Please select a filter to view the table.
+              </Typography>
+            </Box>
+          )}
         </Box>
       </Box>
     </Box>
