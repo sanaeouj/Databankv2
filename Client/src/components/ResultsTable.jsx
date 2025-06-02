@@ -387,8 +387,8 @@ const ResultsTable = ({ data = [], filters }) => {
   return (
     <Box
       sx={{
-        height: "100%",
-        width: "100%",
+        height: "100vh",
+        width: "83vw",
         backgroundColor: "#20293A",
         color: "white",
         display: "flex",
@@ -409,7 +409,7 @@ const ResultsTable = ({ data = [], filters }) => {
           flexWrap: "wrap",
           gap: 1,
           padding: 1,
-          maxHeight: "120px",
+          height: "160px",
           overflowY: "auto",
           backgroundColor: "#1a2332",
           borderBottom: "1px solid #333"
@@ -446,6 +446,7 @@ const ResultsTable = ({ data = [], filters }) => {
       <Box
         sx={{
           display: "flex",
+          height: "160px",
           justifyContent: "flex-start",
           alignItems: "center",
           padding: "8px 16px",
