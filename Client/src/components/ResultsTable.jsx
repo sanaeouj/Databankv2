@@ -129,8 +129,8 @@ const ResultsTable = ({ data = [], filters }) => {
                 (word) => word.charAt(0).toUpperCase() + word.slice(1)
               )
               .join(" "),
-          width: 150, // Réduction de la largeur par défaut
-          minWidth: 120, // Largeur minimale
+          width: 150,
+          minWidth: 120,
           renderCell: (params) => {
             if (
               key === "company_linkedinlink" ||
@@ -366,7 +366,7 @@ const ResultsTable = ({ data = [], filters }) => {
     {
       field: "actions",
       headerName: "Actions",
-      width: 150, // Réduction de la largeur
+      width: 150,
       renderCell: (params) => (
         <div style={{ display: "flex", gap: "4px" }}>
           <Button
@@ -402,21 +402,21 @@ const ResultsTable = ({ data = [], filters }) => {
         setSettingsDialogOpen={setSettingsDialogOpen}
       />
       
-      {/* Barre de recherche compacte */}
+      {/* Barre de recherche compacte - SANS barre de défilement et SANS champ Actions */}
       <Box
         sx={{
           display: "flex",
           flexWrap: "wrap",
           gap: 1,
           padding: 1,
-          maxHeight: "120px",
-          overflowY: "auto",
+          height: "auto", // Hauteur automatique
           backgroundColor: "#1a2332",
-          borderBottom: "1px solid #333"
+          borderBottom: "1px solid #333",
+          overflow: "visible" // Suppression du overflow pour éviter la barre de défilement
         }}
       >
         {displayedColumns
-          .filter((col) => col.field !== "actions")
+          .filter((col) => col.field !== "actions") // Suppression du champ Actions
           .slice(0, 6) // Limiter à 6 champs de recherche visibles
           .map((col) => (
             <TextField
