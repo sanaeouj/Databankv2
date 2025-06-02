@@ -404,6 +404,7 @@ const exportToCSV = () => {
           gap: 2,
           padding: 2,
           overflowX: "auto",  
+          width: "100%",
         }}
       >
         {displayedColumns.map((col) => (

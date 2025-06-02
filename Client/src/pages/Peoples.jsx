@@ -85,9 +85,8 @@ const People = () => {
       >
         <Box
           sx={{
-            width: 250,
-            minWidth: 250,
-            maxWidth: 250,
+            width: 270,
+       
             height: "100vh",
             bgcolor: "#20293A",
             borderRight: "1px solid #232B3B",
