@@ -191,12 +191,11 @@ const FilterSidebar = ({ filters, setFilters, data }) => {
           p: 0,
           bgcolor: "background.paper",
           color: "text.primary",
-          borderRight: "1px solid #232E3E",
-          height: "100vh",
+          height: "100vh", // occupe toute la hauteur de la fenêtre
           overflowY: "auto",
           display: "flex",
           flexDirection: "column",
-          alignItems: "stretch",
+          borderRight: "1px solid #232E3E", // pour la séparation visuelle
         }}
       >
         <Box sx={{ py: 0, width: "100%" }}>

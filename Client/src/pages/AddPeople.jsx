@@ -608,14 +608,7 @@ const AddPeople = () => {
                 })`
               : "Process File Data"}
           </button>
-          {(isProcessing || successCount > 0 || errorCount > 0) && (
-            <p
-              style={{ color: "#8CA0B3", fontSize: "13px", marginTop: "14px" }}
-            >
-              Processed: {successCount + errorCount} / {fileData.length} |
-              Success: {successCount} | Errors: {errorCount}
-            </p>
-          )}
+       
           <p style={{ color: "#8CA0B3", fontSize: "13px", marginTop: "14px" }}>
             Supported formats: CSV, Excel (.xlsx, .xls). All rows will be
             attempted. Email Status set to 'Extrapolated' if Email is missing.

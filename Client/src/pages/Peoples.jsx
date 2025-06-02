@@ -67,35 +67,33 @@ const People = () => {
   const filteredData = applyFilters(data);
 
   return (
-    <Box sx={{ display: "flex", width: "83vw", height: "100vh", bgcolor: "#181F2A", m: 0, p: 0 }}>
+    <Box sx={{ display: "flex", width: "100vw", height: "100vh", bgcolor: "#181F2A", m: 0, p: 0 }}>
       <Sidebar />
       <Box
         component="main"
         sx={{
-          width: `calc(100vw - ${drawerWidth}px)`,
-          minHeight: "100vh",
-          bgcolor: "#181F2A",
           display: "flex",
           flexDirection: "row",
-          alignItems: "stretch",
+          width: `calc(100vw - ${drawerWidth}px)`,
+          height: "100vh",
+          bgcolor: "#181F2A",
           overflow: "hidden",
-          m: 0,  
-          p: 0, 
+          m: 0,
+          p: 0,
         }}
       >
+        {/* FilterSidebar - maintenant fixe */}
         <Box
           sx={{
             width: 250,
-            minWidth: 250,
-            maxWidth: 250,
+            flexShrink: 0,
             height: "100vh",
             bgcolor: "#20293A",
             borderRight: "1px solid #232B3B",
-            p: 0,
-            m: 0,  
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "flex-start",
+            overflowY: "auto",
+            position: "sticky",
+            left: 0,
+            zIndex: 1,
           }}
         >
           {loading ? (
@@ -115,7 +113,9 @@ const People = () => {
             />
           )}
         </Box>
-         <Box
+
+        {/* Contenu principal */}
+        <Box
           sx={{
             flexGrow: 1,
             p: 0,
