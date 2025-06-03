@@ -465,7 +465,6 @@ app.put('/api/ressources/update/:id', async (req, res) => {
   }
 });
 
-// Récupérer les employés d'une entreprise
 app.get('/api/company/employees/:company', async (req, res) => {
   try {
     const { company } = req.params;

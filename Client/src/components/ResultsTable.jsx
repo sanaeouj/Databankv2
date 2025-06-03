@@ -88,7 +88,7 @@ const hiddenColumns = [
       "departments": item.departments || "",
       "mobilePhone": item.mobilePhone || "",
       "email": item.email || "",
-      "EmailStatus": item.EmailStatus || "",
+      "EmailStatus": item.EmailStatus || "Unavailable",
 
        "company_company": item.company?.company || "",
       "company_Email": item.company?.Email || "",
@@ -531,10 +531,10 @@ const exportToCSV = () => {
             textAlign: "center",
           },
           "& .MuiCheckbox-root": {
-            color: "#6366F1", // couleur par défaut (bleu)
+            color: "#6366F1", 
           },
           "& .Mui-checked": {
-            color: "#6366F1 !important", // couleur quand c'est coché (bleu)
+            color: "#6366F1 !important", 
           },
         }}
       />
