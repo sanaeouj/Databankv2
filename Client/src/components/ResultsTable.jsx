@@ -400,7 +400,7 @@ const exportToCSV = () => {
       <Box
         sx={{
           display: "flex",
-          flexWrap: "wrap",
+          flexWrap: "nowrap",
           gap: 2,
           padding: 2,
         }}
