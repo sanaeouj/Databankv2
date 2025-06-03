@@ -309,12 +309,10 @@ const AddPeople = () => {
             current[keys[keys.length - 1]] = processedValue;
           });
 
-          if (!newClient.firstName || !newClient.lastName || !newClient.email || !newClient.company?.company) {
+          if (!newClient.firstName || !newClient.lastName) {
             const missingFields = [];
             if (!newClient.firstName) missingFields.push("First Name");
             if (!newClient.lastName) missingFields.push("Last Name");
-            if (!newClient.email) missingFields.push("Email");
-            if (!newClient.company?.company) missingFields.push("Company Name");
             const errorMessage = `Row ${index + 1}: Missing required fields after mapping: ${missingFields.join(', ')}. Client: ${JSON.stringify(client)}`;
             console.warn(errorMessage);
             errors.push(errorMessage);
@@ -379,28 +377,27 @@ Errors: ${errorCount}`;
   };
 
    const handleSubmit = async (e) => {
-    e.preventDefault();
-    try {
-       if (!formData.firstName || !formData.lastName || !formData.email || !formData.company?.company || !formData.EmailStatus) {
-         throw new Error("Veuillez remplir tous les champs requis (*), y compris le statut de l'e-mail.");
-      }
-
-      console.log("Envoi du formulaire manuel:", formData);
-      const response = await addClientToDatabase(formData);
-      alert("✅ Client ajouté manuellement avec succès !");
-      
-       setFormData({
-        firstName: "", lastName: "", title: "", seniority: "", departments: "",
-        mobilePhone: "", email: "", EmailStatus: "", company: { companyid: "", company: "", email: "", phone: "", employees: "", industry: "", seoDescription: "", personalid: "" },
-        geo: { address: "", city: "", state: "", country: "" }, social: { linkedinUrl: "", facebookUrl: "", twitterUrl: "", companyid: "" },
-        companyRevenue: { companyid: "", latestFunding: "", latestFundingAmount: "" }
-      });
-
-    } catch (error) {
-      console.error("Erreur lors de la soumission manuelle:", error);
-      alert(`❌ Erreur: ${error.message}`);
+  e.preventDefault();
+  try {
+    if (!formData.firstName || !formData.lastName) {
+      throw new Error("error: First Name and Last Name are required.");
     }
-  };
+
+    const response = await addClientToDatabase(formData);
+    alert("✅ Client ajouté manuellement avec succès !");
+
+    setFormData({
+      firstName: "", lastName: "", title: "", seniority: "", departments: "",
+      mobilePhone: "", email: "", EmailStatus: "", company: { companyid: "", company: "", email: "", phone: "", employees: "", industry: "", seoDescription: "", personalid: "" },
+      geo: { address: "", city: "", state: "", country: "" }, social: { linkedinUrl: "", facebookUrl: "", twitterUrl: "", companyid: "" },
+      companyRevenue: { companyid: "", latestFunding: "", latestFundingAmount: "" }
+    });
+
+  } catch (error) {
+    console.error("Erreur lors de la soumission manuelle:", error);
+    alert(`❌ Erreur: ${error.message}`);
+  }
+};
 
    const formatLabel = (label) => {
      if (label === 'EmailStatus') return 'Email Status';
