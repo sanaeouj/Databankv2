@@ -31,6 +31,7 @@ const ResultsTable = ({ data = [], filters }) => {
     message: "",
     severity: "success",
   });
+
   const headerMapping = {
     "First Name": "First Name",
     "Last Name": "Last Name",
@@ -59,60 +60,57 @@ const ResultsTable = ({ data = [], filters }) => {
     "revenue_Total Funding": "Total Funding",
     "revenue_Latest Funding Amount": "Latest Funding Amount",
   };
-const hiddenColumns = [
-  "personalid",
-  "companyid",
-  "company_companyid",    
-  "companycompanyid",   
-  "company_personalid",
-  "geoid",
-  "geocompanyid",
-  "revenueid",
-  "revenue.companyid",
-  "revenue_companyid",   
-  "revenuecompanyid",     
-  "socialid",
-  "social_companyid",
-  "socialcompanyid",
-  "revenue_Latest Funding" 
-];
+
+  const hiddenColumns = [
+    "personalid",
+    "companyid",
+    "company_companyid",    
+    "companycompanyid",   
+    "company_personalid",
+    "geoid",
+    "geocompanyid",
+    "revenueid",
+    "revenue.companyid",
+    "revenue_companyid",   
+    "revenuecompanyid",     
+    "socialid",
+    "social_companyid",
+    "socialcompanyid",
+    "revenue_Latest Funding" 
+  ];
 
   const flattenData = (data) => {
-  return data.map(item => {
-    return {
-       "personalid": item.personalid,
-      "First Name": item["First Name"] || "",
-      "Last Name": item["Last Name"] || "",
-      "title": item.title || "",
-      "seniority": item.seniority || "",
-      "departments": item.departments || "",
-      "mobilePhone": item.mobilePhone || "",
-      "email": item.email || "",
-      "EmailStatus": item.EmailStatus || "",
-
-       "company_company": item.company?.company || "",
-      "company_Email": item.company?.Email || "",
-      "company_Phone": item.company?.Phone || "",
-      "company_employees": item.company?.employees || "",
-      "company_industry": item.company?.industry || "",
-      "company_SEO Description": item.company?.["SEO Description"] || "",
-      "company_linkedinlink": item.company?.linkedinlink || "",
-      "company_website": item.company?.website || "",
-
-       "geo_address": item.geo?.address || "",
-      "geo_city": item.geo?.city || "",
-      "geo_state": item.geo?.state || "",
-      "geo_country": item.geo?.country || "",
-
-       "revenue_Latest Funding": item.revenue?.["Latest Funding"] || "",
-      "revenue_Latest Funding Amount": item.revenue?.["Latest Funding Amount"] || "",
-
-       "social_Company Linkedin Url": item.social?.["Company Linkedin Url"] || "",
-      "social_Facebook Url": item.social?.["Facebook Url"] || "",
-      "social_Twitter Url": item.social?.["Twitter Url"] || ""
-    };
-  });
-};
+    return data.map(item => {
+      return {
+        "personalid": item.personalid,
+        "First Name": item["First Name"] || "",
+        "Last Name": item["Last Name"] || "",
+        "title": item.title || "",
+        "seniority": item.seniority || "",
+        "departments": item.departments || "",
+        "mobilePhone": item.mobilePhone || "",
+        "email": item.email || "",
+        "EmailStatus": item.EmailStatus || "",
+        "company_company": item.company?.company || "",
+        "company_Email": item.company?.Email || "",
+        "company_Phone": item.company?.Phone || "",
+        "company_employees": item.company?.employees || "",
+        "company_industry": item.company?.industry || "",
+        "company_SEO Description": item.company?.["SEO Description"] || "",
+        "company_linkedinlink": item.company?.linkedinlink || "",
+        "company_website": item.company?.website || "",
+        "geo_address": item.geo?.address || "",
+        "geo_city": item.geo?.city || "",
+        "geo_state": item.geo?.state || "",
+        "geo_country": item.geo?.country || "",
+        "revenue_Latest Funding": item.revenue?.["Latest Funding"] || "",
+        "revenue_Latest Funding Amount": item.revenue?.["Latest Funding Amount"] || "",
+        "social_Company Linkedin Url": item.social?.["Company Linkedin Url"] || "",
+        "social_Facebook Url": item.social?.["Facebook Url"] || "",
+        "social_Twitter Url": item.social?.["Twitter Url"] || ""
+      };
+    });
+  };
 
   const getColumnsFromData = (data) => {
     if (!data || !data.length) return [];
@@ -131,9 +129,10 @@ const hiddenColumns = [
                 (word) => word.charAt(0).toUpperCase() + word.slice(1)
               )
               .join(" "),
-          width: 200,
+          width: 150,
+          minWidth: 120,
           renderCell: (params) => {
-             if (
+            if (
               key === "company_linkedinlink" ||
               key === "company_website"
             ) {
@@ -155,7 +154,7 @@ const hiddenColumns = [
                 ""
               );
             }
-             if (key === "revenue_Latest Funding") {
+            if (key === "revenue_Latest Funding") {
               return formatDate(params.value);
             } else if (key.includes("Url")) {
               return params.value ? (
@@ -227,89 +226,90 @@ const hiddenColumns = [
     }
   };
 
-const importMapping = {
-  "First Name": "First Name",
-  "Last Name": "Last Name",
-  "Title": "title",               
-  "Seniority": "seniority",       
-  "Departments": "departments",   
-  "Mobile Phone": "mobilePhone",
-  "Email": "email",                 
-  "Email Status": "EmailStatus",
-  "Company": "company_company",
-  "Company Email": "company_Email",
-  "Company Phone": "company_Phone",
-  "Employees": "company_employees",
-  "Industry": "company_industry",
-  "SEO Description": "company_SEO Description",
-  "Company LinkedIn": "company_linkedinlink",
-  "Company Website": "company_website",
-  "Address": "geo_address",
-  "City": "geo_city",
-  "State": "geo_state",
-  "Country": "geo_country",
-  "Latest Funding Amount": "revenue_Latest Funding Amount",
-  "LinkedIn": "social_Company Linkedin Url",
-  "Facebook": "social_Facebook Url",
-  "Twitter": "social_Twitter Url"
-};
+  const importMapping = {
+    "First Name": "First Name",
+    "Last Name": "Last Name",
+    "Title": "title",               
+    "Seniority": "seniority",       
+    "Departments": "departments",   
+    "Mobile Phone": "mobilePhone",
+    "Email": "email",                 
+    "Email Status": "EmailStatus",
+    "Company": "company_company",
+    "Company Email": "company_Email",
+    "Company Phone": "company_Phone",
+    "Employees": "company_employees",
+    "Industry": "company_industry",
+    "SEO Description": "company_SEO Description",
+    "Company LinkedIn": "company_linkedinlink",
+    "Company Website": "company_website",
+    "Address": "geo_address",
+    "City": "geo_city",
+    "State": "geo_state",
+    "Country": "geo_country",
+    "Latest Funding Amount": "revenue_Latest Funding Amount",
+    "LinkedIn": "social_Company Linkedin Url",
+    "Facebook": "social_Facebook Url",
+    "Twitter": "social_Twitter Url"
+  };
 
-const exportToCSV = () => {
-  if (!filteredData.length) {
-    alert("No data to export.");
-    return;
-  }
+  const exportToCSV = () => {
+    if (!filteredData.length) {
+      alert("No data to export.");
+      return;
+    }
 
-   const headers = Object.keys(importMapping);
-  
-   const csvRows = filteredData.map(row => {
-    return headers.map(header => {
-      const fieldName = importMapping[header];
-      const cellValue = row[fieldName];
-      
-       return `"${(cellValue !== null && cellValue !== undefined ? cellValue.toString().replace(/"/g, '""') : '')}"`;
-    }).join(',');
-  });
-
-  csvRows.unshift(headers.map(h => `"${h}"`).join(','));
-   const csvContent = csvRows.join('\n');
-
-   const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-  const link = document.createElement('a');
-  const url = URL.createObjectURL(blob);
-  
-  link.setAttribute('href', url);
-  link.setAttribute('download', 'databank_export.csv');
-  link.style.visibility = 'hidden';
-  
-  document.body.appendChild(link);
-  link.click();
-  document.body.removeChild(link);
-};
-
- const exportToExcel = () => {
-  if (!filteredData.length) {
-    alert("No data to export.");
-    return;
-  }
-
-   const headers = Object.keys(importMapping);
-  
-   const exportData = filteredData.map(row => {
-    const exportedRow = {};
-    headers.forEach(header => {
-      const fieldName = importMapping[header];
-      exportedRow[header] = row[fieldName] || '';
+    const headers = Object.keys(importMapping);
+    
+    const csvRows = filteredData.map(row => {
+      return headers.map(header => {
+        const fieldName = importMapping[header];
+        const cellValue = row[fieldName];
+        
+        return `"${(cellValue !== null && cellValue !== undefined ? cellValue.toString().replace(/"/g, '""') : '')}"`;
+      }).join(',');
     });
-    return exportedRow;
-  });
 
-   const worksheet = XLSX.utils.json_to_sheet(exportData);
-  const workbook = XLSX.utils.book_new();
-  XLSX.utils.book_append_sheet(workbook, worksheet, "Data");
-  
-   XLSX.writeFile(workbook, "databank_export.xlsx");
-};
+    csvRows.unshift(headers.map(h => `"${h}"`).join(','));
+    const csvContent = csvRows.join('\n');
+
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    const url = URL.createObjectURL(blob);
+    
+    link.setAttribute('href', url);
+    link.setAttribute('download', 'databank_export.csv');
+    link.style.visibility = 'hidden';
+    
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
+  const exportToExcel = () => {
+    if (!filteredData.length) {
+      alert("No data to export.");
+      return;
+    }
+
+    const headers = Object.keys(importMapping);
+    
+    const exportData = filteredData.map(row => {
+      const exportedRow = {};
+      headers.forEach(header => {
+        const fieldName = importMapping[header];
+        exportedRow[header] = row[fieldName] || '';
+      });
+      return exportedRow;
+    });
+
+    const worksheet = XLSX.utils.json_to_sheet(exportData);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Data");
+    
+    XLSX.writeFile(workbook, "databank_export.xlsx");
+  };
+
   const SettingsDialog = () => (
     <Dialog
       open={settingsDialogOpen}
@@ -339,7 +339,7 @@ const exportToCSV = () => {
                       )
                     )
                   }
-                  sx={{ color: "#6366F1" }} // bleu
+                  sx={{ color: "#6366F1" }}
                 />
               }
               label={col.headerName}
@@ -366,15 +366,16 @@ const exportToCSV = () => {
     {
       field: "actions",
       headerName: "Actions",
-      width: 300,
+      width: 150,
       renderCell: (params) => (
-        <div style={{ display: "flex", gap: "8px" }}>
+        <div style={{ display: "flex", gap: "4px" }}>
           <Button
             onClick={() => handleDeleteRow(params.row)}
             startIcon={<DeleteIcon />}
             variant="contained"
             color="error"
             size="small"
+            sx={{ fontSize: "0.7rem", px: 1 }}
           >
             Delete
           </Button>
@@ -384,12 +385,15 @@ const exportToCSV = () => {
   ];
 
   return (
-    <div
-      style={{
-        height: "90vh",
-        overflowX: "auto",
+    <Box
+      sx={{
+        height: "100%",
+        width: "100%",
         backgroundColor: "#20293A",
         color: "white",
+        display: "flex",
+        flexDirection: "column",
+        overflow: "hidden"
       }}
     >
       <CustomToolbar
@@ -397,37 +401,49 @@ const exportToCSV = () => {
         exportToExcel={exportToExcel}
         setSettingsDialogOpen={setSettingsDialogOpen}
       />
+      
+      {/* Barre de recherche compacte */}
       <Box
         sx={{
           display: "flex",
-          flexWrap: "nowrap",  
-          gap: 2,
-          padding: 2,
-          width: "100%",
+          flexWrap: "wrap",
+          gap: 1,
+          padding: 1,
+          height: "auto",
+          backgroundColor: "#1a2332",
+          borderBottom: "1px solid #333",
+          overflow: "visible"
         }}
       >
-        {displayedColumns.map((col) => (
-          <TextField
-            key={col.field}
-            label={col.headerName}
-            value={filterValues[col.field] || ""}
-            onChange={(e) =>
-              setFilterValues((prev) => ({
-                ...prev,
-                [col.field]: e.target.value,
-              }))
-            }
-            variant="outlined"
-            size="small"
-            sx={{
-              flex: 1,
-              minWidth: "150px",
-            }}
-            InputProps={{ style: { color: "white" } }}
-            InputLabelProps={{ style: { color: "white" } }}
-          />
+        {displayedColumns
+          .filter((col) => col.field !== "actions")
+          .slice(0, 6)
+          .map((col) => (
+            <TextField
+              key={col.field}
+              label={col.headerName}
+              value={filterValues[col.field] || ""}
+              onChange={(e) =>
+                setFilterValues((prev) => ({
+                  ...prev,
+                  [col.field]: e.target.value,
+                }))
+              }
+              variant="outlined"
+              size="small"
+              sx={{
+                minWidth: "140px",
+                maxWidth: "180px",
+                flex: "1 1 140px",
+                fontSize: "14px"
+              }}
+              InputProps={{ style: { color: "white", fontSize: "14px" } }}
+              InputLabelProps={{ style: { color: "white", fontSize: "14px" } }}
+            />
         ))}
       </Box>
+
+      {/* Compteur de résultats */}
       <Box
         sx={{
           display: "flex",
@@ -435,109 +451,65 @@ const exportToCSV = () => {
           alignItems: "center",
           padding: "8px 16px",
           backgroundColor: "#20293A",
-          color: "white",
-          fontSize: "16px",
-          fontWeight: "bold",
+          borderBottom: "1px solid #333"
         }}
       >
-        <Typography variant="body1" sx={{ color: "white" }}>
-          Total Filter: {filteredData.length}
+        <Typography variant="body2" sx={{ color: "white", fontSize: "0.9rem" }}>
+          Total Results: {filteredData.length}
         </Typography>
       </Box>
-      <DataGrid
-        rows={filteredData}
-        columns={displayedColumns}
-        getRowId={(row) => row.personalid || Math.random()}
-        pageSize={pageSize}
-        onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
-        rowsPerPageOptions={[5, 10, 20, 100]}
-        checkboxSelection
-        disableRowSelectionOnClick
-        sx={{
-          fontSize: "20px",
-          height: "100%",
-          backgroundColor: "#20293A",
-          color: "white",
-          width: `${Math.max(
-            displayedColumns.reduce(
-              (total, col) => total + (col.width || 200),
-              0
-            ),
-            window.innerWidth
-          )}px`,
-          "& .MuiDataGrid-columnHeaders": {
+
+      {/* DataGrid */}
+      <Box sx={{ flexGrow: 1, overflow: "hidden" }}>
+        <DataGrid
+          rows={filteredData}
+          columns={displayedColumns}
+          getRowId={(row) => row.personalid || Math.random()}
+          pageSize={pageSize}
+          onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
+          rowsPerPageOptions={[5, 10, 20, 50]}
+          checkboxSelection
+          disableRowSelectionOnClick
+          sx={{
+            fontSize: "14px",
+            height: "100%",
             backgroundColor: "#20293A",
             color: "white",
-            fontWeight: "bold",
-          },
-          "& .MuiDataGrid-row": {
-            backgroundColor: "#20293A",
-            color: "white",
-          },
-          "& .MuiDataGrid-row:hover": {
-            backgroundColor: "#20293A",
-            color: "white",
-          },
-          "& .MuiDataGrid-footerContainer": {
-            backgroundColor: "#20293A",
-            color: "white",
-          },
-          "& .MuiDataGrid-filler": {
-            backgroundColor: "#20293A",
-            color: "white",
-          },
-          "& .MuiDataGrid-cell:hover": {
-            backgroundColor: "#20293A",
-            color: "white",
-          },
-          "& .MuiDataGrid-footerCell": {
-            backgroundColor: "#20293A",
-            color: "white",
-          },
-          "& .MuiDataGrid-columnHeader": {
-            backgroundColor: "#20293A",
-            color: "white",
-            fontWeight: "bold",
-          },
-          "& .MuiDataGrid-columnHeaderTitle": {
-            color: "white",
-            textAlign: "center",
-            width: "100%",
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-          },
-          "& .MuiDataGrid-columnHeaderCheckbox": { color: "white" },
-          "& .MuiDataGrid-rowCheckbox": { color: "white" },
-          "& .MuiTablePagination-displayedRows": { color: "white" },
-          "& .MuiTablePagination-actions": { color: "white" },
-          "& .MuiTablePagination-selectIcon": { color: "white" },
-          "& .MuiTablePagination-selectLabel": { color: "white" },
-          "& .MuiTablePagination-menuItem": { color: "white" },
-          "& .MuiTablePagination-menuItem:hover": {
-            backgroundColor: "#444",
-            color: "white",
-          },
-          "& .MuiTablePagination-menuItem.selected": {
-            backgroundColor: "#444",
-            color: "white",
-          },
-          "& .MuiDataGrid-cell": {
-            backgroundColor: "#20293A",
-            color: "white",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            textAlign: "center",
-          },
-          "& .MuiCheckbox-root": {
-            color: "#6366F1", // couleur par défaut (bleu)
-          },
-          "& .Mui-checked": {
-            color: "#6366F1 !important", // couleur quand c'est coché (bleu)
-          },
-        }}
-      />
+            "& .MuiDataGrid-columnHeaders": {
+              backgroundColor: "#1a2332",
+              color: "white",
+              fontWeight: "bold",
+              fontSize: "14px"
+            },
+            "& .MuiDataGrid-row": {
+              backgroundColor: "#20293A",
+              color: "white",
+              fontSize: "14px"
+            },
+            "& .MuiDataGrid-row:hover": {
+              backgroundColor: "#2a3441",
+              color: "white",
+            },
+            "& .MuiDataGrid-footerContainer": {
+              backgroundColor: "#1a2332",
+              color: "white",
+            },
+            "& .MuiDataGrid-cell": {
+              backgroundColor: "#20293A",
+              color: "white",
+              padding: "4px 8px",
+              fontSize: "14px"
+            },
+            "& .MuiCheckbox-root": {
+              color: "#6366F1",
+            },
+            "& .Mui-checked": {
+              color: "#6366F1 !important",
+            },
+          }}
+        />
+      </Box>
+
       <SettingsDialog />
       <Snackbar
         open={snackbar.open}
@@ -553,7 +525,7 @@ const exportToCSV = () => {
           {snackbar.message}
         </Alert>
       </Snackbar>
-    </div>
+    </Box>
   );
 };
 
