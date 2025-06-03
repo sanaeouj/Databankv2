@@ -10,7 +10,6 @@ import {
   ThemeProvider,
   createTheme,
   Divider,
-  TextField,
 } from "@mui/material";
 import { alpha } from "@mui/material/styles";
 import { FilterX } from "lucide-react";
@@ -115,44 +114,6 @@ const FilterSidebar = ({ filters, setFilters, data }) => {
   ];
 
   const renderDropdown = (label, key, filter = {}) => {
-    // Pour Email Status, on affiche un TextField au lieu d'un Select
-    if (key === "EmailStatus") {
-      return (
-        <Box key={key} sx={{ mt: 2, width: "100%" }}>
-          <Typography
-            variant="body2"
-            sx={{
-              color: "text.secondary",
-              mb: 1,
-              fontWeight: 600,
-              width: "100%",
-            }}
-          >
-            {label}
-          </Typography>
-          <FormControl fullWidth sx={{ width: "100%" }}>
-            <TextField
-              name={key}
-              value={filters[key] || ""}
-              onChange={handleChange}
-              placeholder={`Type ${label}`}
-              variant="outlined"
-              size="small"
-              sx={{
-                bgcolor: "#232B3B",
-                color: "text.primary",
-                input: { color: "#fff" },
-                "& .MuiOutlinedInput-root": {
-                  borderRadius: 2,
-                },
-              }}
-            />
-          </FormControl>
-        </Box>
-      );
-    }
-
-    // Sinon, on garde le Select pour les autres champs
     const values = getUniqueValues(key, filter);
     const isDisabled = Object.keys(filter).some((filterKey) => !filters[filterKey]);
     return (
@@ -230,12 +191,11 @@ const FilterSidebar = ({ filters, setFilters, data }) => {
           p: 0,
           bgcolor: "background.paper",
           color: "text.primary",
-          borderRight: "1px solid #232E3E",
           height: "100vh",
           overflowY: "auto",
           display: "flex",
           flexDirection: "column",
-          alignItems: "stretch",
+          borderRight: "1px solid #232E3E",
         }}
       >
         <Box sx={{ py: 0, width: "100%" }}>
