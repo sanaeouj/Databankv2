@@ -398,7 +398,7 @@ const ResultsTable = ({ data = [], filters, onDataUpdate }) => {
         color: "white",
         display: "flex",
         flexDirection: "column",
-        overflow: "hidden"
+        overflow: "hidden" // Empêche le défilement horizontal global
       }}
     >
       <CustomToolbar
@@ -419,6 +419,7 @@ const ResultsTable = ({ data = [], filters, onDataUpdate }) => {
           overflow: "visible"
         }}
       >
+        {/* Suppression de l'option "Action" dans la barre de recherche du haut */}
         {displayedColumns
           .filter((col) => col.field !== "actions")
           .slice(0, 6)
@@ -439,10 +440,10 @@ const ResultsTable = ({ data = [], filters, onDataUpdate }) => {
                 minWidth: "140px",
                 maxWidth: "180px",
                 flex: "1 1 140px",
-                fontSize: "14px"
+                fontSize: "16px" // Augmentation de la taille de police
               }}
-              InputProps={{ style: { color: "white", fontSize: "14px" } }}
-              InputLabelProps={{ style: { color: "white", fontSize: "14px" } }}
+              InputProps={{ style: { color: "white", fontSize: "16px" } }} // Augmentation de la taille de police
+              InputLabelProps={{ style: { color: "white", fontSize: "16px" } }} // Augmentation de la taille de police
             />
         ))}
       </Box>
@@ -462,8 +463,8 @@ const ResultsTable = ({ data = [], filters, onDataUpdate }) => {
         </Typography>
       </Box>
 
-      {/* DataGrid */}
-      <Box sx={{ flexGrow: 1, overflow: "hidden" }}>
+      {/* DataGrid avec défilement horizontal autorisé uniquement pour le tableau */}
+      <Box sx={{ flexGrow: 1, overflow: "auto" }}>
         <DataGrid
           rows={filteredData}
           columns={displayedColumns}
@@ -474,7 +475,7 @@ const ResultsTable = ({ data = [], filters, onDataUpdate }) => {
           checkboxSelection
           disableRowSelectionOnClick
           sx={{
-            fontSize: "14px",
+            fontSize: "16px", // Augmentation de la taille de police du tableau
             height: "100%",
             backgroundColor: "#20293A",
             color: "white",
@@ -482,12 +483,12 @@ const ResultsTable = ({ data = [], filters, onDataUpdate }) => {
               backgroundColor: "#1a2332",
               color: "white",
               fontWeight: "bold",
-              fontSize: "14px"
+              fontSize: "16px" // Augmentation de la taille de police des en-têtes
             },
             "& .MuiDataGrid-row": {
               backgroundColor: "#20293A",
               color: "white",
-              fontSize: "14px"
+              fontSize: "16px" // Augmentation de la taille de police des lignes
             },
             "& .MuiDataGrid-row:hover": {
               backgroundColor: "#2a3441",
@@ -496,12 +497,13 @@ const ResultsTable = ({ data = [], filters, onDataUpdate }) => {
             "& .MuiDataGrid-footerContainer": {
               backgroundColor: "#1a2332",
               color: "white",
+              fontSize: "16px" // Augmentation de la taille de police du pied de page
             },
             "& .MuiDataGrid-cell": {
               backgroundColor: "#20293A",
               color: "white",
               padding: "4px 8px",
-              fontSize: "14px"
+              fontSize: "16px" // Augmentation de la taille de police des cellules
             },
             "& .MuiCheckbox-root": {
               color: "#6366F1",
@@ -518,7 +520,6 @@ const ResultsTable = ({ data = [], filters, onDataUpdate }) => {
         open={snackbar.open}
         autoHideDuration={6000}
         onClose={() => setSnackbar({ ...snackbar, open: false })}
-        anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
       >
         <Alert
           onClose={() => setSnackbar({ ...snackbar, open: false })}

@@ -69,10 +69,10 @@ const People = () => {
   return (
     <Box sx={{ 
       display: "flex", 
-      width: "100vw", 
+      width: "100%", // Modifié de 100vw à 100% pour éviter le défilement horizontal
       height: "100vh", 
       bgcolor: "#181F2A", 
-      overflow: "hidden"
+      overflow: "hidden" // Empêche le défilement global
     }}>
       <Sidebar />
       
@@ -108,22 +108,22 @@ const People = () => {
         )}
       </Box>
 
-      {/* Main Content - Décalé pour éviter le chevauchement */}
+      {/* Main Content - Directement après FilterSidebar sans contenu intermédiaire */}
       <Box
         component="main"
         sx={{
           marginLeft: `${drawerWidth + 270}px`, // Sidebar + FilterSidebar width
-          width: `calc(100vw - ${drawerWidth + 270}px)`,
-          height: "100vh", // Changé de minHeight à height
+          width: `calc(100% - ${drawerWidth + 270}px)`, // Modifié pour utiliser 100% de l'espace disponible
+          height: "100vh",
           bgcolor: "#181F2A",
           display: "flex",
           flexDirection: "column",
-          overflow: "hidden"
+          overflow: "hidden" // Empêche le défilement horizontal global
         }}
       >
-        {/* Header Section - Réduit le padding */}
+        {/* Header Section - Texte noir au lieu de blanc */}
         <Box sx={{ px: 2, pt: 2, pb: 1, flexShrink: 0 }}>
-          <Typography variant="h5" sx={{ color: "#fff", fontWeight: 700, mb: 1 }}>
+          <Typography variant="h5" sx={{ color: "#000", fontWeight: 700, mb: 1 }}>
             People List
           </Typography>
           <Box sx={{ display: "flex", gap: 1, mb: 1 }}>
@@ -135,13 +135,13 @@ const People = () => {
               onChange={(e) => setFilterName(e.target.value)}
               sx={{
                 bgcolor: "#20293A",
-                input: { color: "#fff" },
+                input: { color: "#000" }, // Texte noir
                 "& .MuiOutlinedInput-notchedOutline": { borderColor: "#293145" },
                 width: 180,
                 fontSize: "14px"
               }}
-              InputProps={{ style: { color: "#fff", fontSize: "14px" } }}
-              InputLabelProps={{ style: { color: "#fff", fontSize: "14px" } }}
+              InputProps={{ style: { color: "#000", fontSize: "14px" } }} // Texte noir
+              InputLabelProps={{ style: { color: "#000", fontSize: "14px" } }} // Texte noir
             />
             <Button
               variant="contained"
@@ -160,12 +160,12 @@ const People = () => {
           </Box>
         </Box>
 
-        {/* Table Section - Supprimez le padding inutile */}
+        {/* Table Section - Optimisé pour éviter le défilement horizontal global */}
         <Box sx={{ 
           flexGrow: 1, 
           display: "flex", 
           flexDirection: "column",
-          overflow: "hidden"
+          overflow: "hidden" // Empêche le défilement horizontal global
         }}>
           {loading ? (
             <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", flexGrow: 1 }}>
