@@ -38,8 +38,15 @@ const People = () => {
     fetchData();
   }, []);
 
+  const flattenData = (data) => {
+    return data.map(item => ({
+      ...item,
+      EmailStatus: item.EmailStatus || "Unavailable",
+    }));
+  };
+
   const applyFilters = (data) => {
-    return data.filter((item) => {
+    return flattenData(data).filter((item) => {
       return Object.entries(filters).every(([key, value]) => {
         if (!value) return true;
         let itemValue = key.includes(".")
