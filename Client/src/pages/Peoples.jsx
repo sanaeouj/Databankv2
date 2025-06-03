@@ -172,7 +172,11 @@ const People = () => {
               <CircularProgress />
             </Box>
           ) : showTable && filteredData.length > 0 ? (
-            <ResultsTable data={filteredData} filters={filters} />
+            <ResultsTable
+              data={filteredData}
+              filters={filters}
+              onDataUpdate={fetchData}
+            />
           ) : (
             <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", flexGrow: 1 }}>
               <Typography variant="body1" sx={{ color: "gray" }}>

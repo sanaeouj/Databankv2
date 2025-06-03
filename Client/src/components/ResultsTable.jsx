@@ -19,13 +19,14 @@ import axios from "axios";
 import CustomToolbar from "./CustomToolbar";
 import DeleteIcon from "@mui/icons-material/Delete";
 
-const ResultsTable = ({ data = [], filters }) => {
+const ResultsTable = ({ data = [], filters, onDataUpdate }) => {
   const [settingsDialogOpen, setSettingsDialogOpen] = useState(false);
   const [filterValues, setFilterValues] = useState({});
   const [savedFilters, setSavedFilters] = useState({});
   const [pageSize, setPageSize] = useState(10);
   const [visibleColumns, setVisibleColumns] = useState([]);
   const [filteredData, setFilteredData] = useState([]);
+  const [deletedIds, setDeletedIds] = useState(new Set());
   const [snackbar, setSnackbar] = useState({
     open: false,
     message: "",
@@ -186,16 +187,18 @@ const ResultsTable = ({ data = [], filters }) => {
   useEffect(() => {
     const applyFilters = () => {
       if (!data || !data.length) return [];
-      return flattenData(data).filter((row) => {
-        return Object.entries(filterValues).every(([key, value]) => {
-          if (!value) return true;
-          const cellValue = row[key]?.toString().toLowerCase() || "";
-          return cellValue.includes(value.toLowerCase());
+      return flattenData(data)
+        .filter((row) => !deletedIds.has(row.personalid))
+        .filter((row) => {
+          return Object.entries(filterValues).every(([key, value]) => {
+            if (!value) return true;
+            const cellValue = row[key]?.toString().toLowerCase() || "";
+            return cellValue.includes(value.toLowerCase());
+          });
         });
-      });
     };
     setFilteredData(applyFilters());
-  }, [data, filterValues]);
+  }, [data, filterValues, deletedIds]);
 
   const formatDate = (dateString) => {
     return new Date(dateString).toLocaleDateString("fr-FR");
@@ -209,15 +212,17 @@ const ResultsTable = ({ data = [], filters }) => {
       await axios.delete(
         `https://databank-yndl.onrender.com/api/ressources/delete/${row.personalid}`
       );
-      setFilteredData((prev) =>
-        prev.filter((item) => item.personalid !== row.personalid)
-      );
+      setDeletedIds(prev => new Set([...prev, row.personalid]));
+      if (onDataUpdate) {
+        onDataUpdate(row.personalid);
+      }
       setSnackbar({
         open: true,
         message: "Row deleted successfully!",
         severity: "success",
       });
     } catch (error) {
+      console.error("Delete error:", error);
       setSnackbar({
         open: true,
         message: "Failed to delete row.",
@@ -402,7 +407,6 @@ const ResultsTable = ({ data = [], filters }) => {
         setSettingsDialogOpen={setSettingsDialogOpen}
       />
       
-      {/* Barre de recherche compacte */}
       <Box
         sx={{
           display: "flex",
@@ -443,7 +447,6 @@ const ResultsTable = ({ data = [], filters }) => {
         ))}
       </Box>
 
-      {/* Compteur de résultats */}
       <Box
         sx={{
           display: "flex",
