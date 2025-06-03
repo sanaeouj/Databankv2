@@ -472,7 +472,7 @@ Supported formats: CSV, Excel (.xlsx, .xls). Make sure the headers match the map
                 style={inputStyle}
                 type="text"
                 name="EmailStatus"
-                value={formData.EmailStatus || ''}  
+                value={formData.EmailStatus || 'Unavailable'}  
                 onChange={handleChange}
                 required
               />
