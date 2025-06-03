@@ -26,7 +26,8 @@ const EditDialog = ({ open, onClose, editFormData, setEditFormData, handleUpdate
           <Typography variant="h6" sx={{ color: "white" }}>
             Personal Details
           </Typography>
-          <Box sx={{ display: "flex", flexWrap: "wrap", gap: 2 }}>
+          {/* Barre de recherche sur une seule ligne */}
+          <Box sx={{ display: "flex", gap: 2, flexWrap: "nowrap", overflowX: "auto" }}>
             <TextField
               label="First Name"
               value={editFormData.personalDetails.firstName || ""}
@@ -44,6 +45,7 @@ const EditDialog = ({ open, onClose, editFormData, setEditFormData, handleUpdate
               size="small"
               InputProps={{ style: { color: "white" } }}
               InputLabelProps={{ style: { color: "white" } }}
+              sx={{ minWidth: 150 }}
             />
             <TextField
               label="Last Name"
@@ -62,6 +64,7 @@ const EditDialog = ({ open, onClose, editFormData, setEditFormData, handleUpdate
               size="small"
               InputProps={{ style: { color: "white" } }}
               InputLabelProps={{ style: { color: "white" } }}
+              sx={{ minWidth: 150 }}
             />
             <TextField
               label="Title"
@@ -80,6 +83,7 @@ const EditDialog = ({ open, onClose, editFormData, setEditFormData, handleUpdate
               size="small"
               InputProps={{ style: { color: "white" } }}
               InputLabelProps={{ style: { color: "white" } }}
+              sx={{ minWidth: 150 }}
             />
             <TextField
               label="Mobile Phone"
@@ -98,6 +102,7 @@ const EditDialog = ({ open, onClose, editFormData, setEditFormData, handleUpdate
               size="small"
               InputProps={{ style: { color: "white" } }}
               InputLabelProps={{ style: { color: "white" } }}
+              sx={{ minWidth: 150 }}
             />
             <TextField
               label="Email"
@@ -116,6 +121,7 @@ const EditDialog = ({ open, onClose, editFormData, setEditFormData, handleUpdate
               size="small"
               InputProps={{ style: { color: "white" } }}
               InputLabelProps={{ style: { color: "white" } }}
+              sx={{ minWidth: 150 }}
             />
           </Box>
 

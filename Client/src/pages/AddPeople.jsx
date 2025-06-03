@@ -468,19 +468,14 @@ Supported formats: CSV, Excel (.xlsx, .xls). Make sure the headers match the map
             ))}
             <div style={inputContainerStyle}>
               <label style={labelStyle}>{formatLabel('EmailStatus')}*:</label>
-              <select
-                style={{ ...inputStyle, appearance: "auto", lineHeight: "normal", paddingRight: 24 }}
+              <input
+                style={inputStyle}
+                type="text"
                 name="EmailStatus"
-                value={formData.EmailStatus || ''}
+                value={formData.EmailStatus || ''}  
                 onChange={handleChange}
                 required
-              >
-                <option value="">-- Sélectionner Statut --</option>
-                <option value="Valid">Valid</option>
-                <option value="Extrapolated">Extrapolated</option>
-                <option value="Unavailable">Unavailable</option>
-                <option value="Unknown">Unknown</option>
-              </select>
+              />
             </div>
           </div>
 
