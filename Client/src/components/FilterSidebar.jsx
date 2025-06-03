@@ -91,6 +91,12 @@ const FilterSidebar = ({ filters, setFilters, data }) => {
         }, item);
       })
       .filter((value) => value !== undefined && value !== null && value !== "");
+
+    // Ajoute "Unavailable" si absent et si le champ est EmailStatus
+    if (key === "EmailStatus" && !values.includes("Unavailable")) {
+      values.push("Unavailable");
+    }
+
     return Array.from(new Set(values)).sort();
   };
 
