@@ -157,4 +157,3 @@ Data Warehouse Team
 ## 🌐 Déploiement
 
 L'application est déployée sur : [databankv2.vercel.app](https://databankv2.vercel.app)
-
